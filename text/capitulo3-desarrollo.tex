@@ -1,0 +1,326 @@
+\chapter{Desarrollo}
+
+\section{Configuración Física del Entorno Inmersivo}%\label{sec:vr_mt}
+
+\subsection{Unión de Dispositivos al Ordenador}
+
+Como primer avance se realizó la configuración de los equipos (Figura \ref{fig:configuracion}). El \textit{Leap Motion} fue adherido en la parte frontal del \textit{Oculus Rift}, luego ambos equipos fueron conectados a una \textit{Laptop} vía dos puertos \textit{USB} y un puerto \textit{HDMI}. En cuanto a la configuración \textit{software}, se instaló el motor de gráficos \textit{Unity3D} en su versión 5.02, el cual es gratuito para fines no comerciales. 
+
+\begin{figure}[h!]
+	\centering
+	\subfigure[]
+	{
+		\includegraphics[width=0.41\columnwidth]{imagenes/esquema-1.png}
+		\label{fig:esquema1}
+	}
+	\subfigure[]
+	{
+		\includegraphics[width=0.44\columnwidth]{imagenes/esquema-2.png}
+		\label{fig:esquema2}
+	}
+	\caption{Configuración del entorno inmersivo. (a) Esquema de configuración. (b) Funcionamiento real del entorno virtual inmersivo}
+	\label{fig:configuracion}
+\end{figure}
+
+\section{Construcción del Ambiente Virtual}
+
+Para determinar las principales directrices para la construcción de un entorno virtual inmersivo, adecuado para la exploración de artículos científicos, se ha realizado una extensa revisión de la literatura, recopilando las directrices y recomendaciones para la elaboración de un buen entorno inmersivo.
+
+\subsection{Directrices para la Construcción del Entorno Virtual}
+
+Las principales directrices son:
+
+\begin{itemize}
+	\item \textbf{Simplicidad} para evitar sobrecargar la interfaz, sólo se deben de utilizar los elementos necesarios. De esta forma se facilita las tareas de percepción y cognición al usuario.
+	
+	\item \textbf{Fondo oscuro}, para mitigar el mareo disminuyendo la frecuencia de actualización requerida para la rotación del observador.
+
+	\item \textbf{Líneas blancas}, delimitadoras del ambiente virtual, los cuales permiten al usuario percibir la profundidad con mayor precisión.
+
+    \item \textbf{Rango de colores cercano a lo real}, para evitar el Efecto de TDF, que indica que si las imágenes no se perciben como reales, causan mareo y una serie de malestares.
+    
+    \item \textbf{Elementos redondeados}, se ajustan mejor a la forma de la mano y permiten que se generen sobras degradadas que facilitan su visualización.
+
+	\item \textbf{Visualización del avatar de AliciaVR}, para fines de aumentar el sentido de presencia del usuario en el ambiente.
+
+\end{itemize}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.80\columnwidth]{imagenes/entorno2.png}
+	\caption{Construcción del Entorno.}
+	\label{%*fig:tmp
+	}
+\end{figure}
+
+\subsection{Elaboración del Avatar de Alicia}
+
+Para que el usuario se imagine quien es su asistente, es que se implementa un avatar para la base de datos científica ALICIA. Este avatar debe poseer características humanas, pero sin llegar a parecer un humano completamente. De esta forma se busca lograr que el usuario intuya que puede interactuar mediante comandos de voz. 
+
+Es importante señalar que el avatar no es un robot con inteligencia artificial, pero si posee las funciones básicas dentro del contexto de la exploración de artículos científicos.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\columnwidth]{imagenes/tmp9.png}
+	\caption{Avatar de ALICIA de la interfaz AliciaVR.}
+	\label{%*fig:tmp
+	}
+\end{figure}
+
+
+\section{Análisis e Implementación de la Interacción Natural}
+
+\subsection{Implementación de la interacción básica}
+
+Posterior a la configuración del entorno inmersivo, se procedió a investigar las técnicas de interacción para entornos virtuales inmersivos, empezando por el primer grupo de ``Exploración Visual'', el cual comprende a la técnica de selección. 
+
+\begin{itemize}
+	\item Experimento 1. Técnica de Selección: Manipulación Directa.
+	
+	En esta técnica, la selección de objetos se realiza mediante el empleo de una mano virtual, que copia exactamente los movimientos de la mano real. Para seleccionar un elemento se lo debe sostener del mismo modo como se haría en el mundo real. En esta técnica de selección, los elementos deben poseer propiedades sólidas y físicas para una mejor interacción. En la Figura \ref{fig:seleccion0} se muestra la selección de un nodo por manipulación directa, como se puede apreciar, es idéntico a agarrar un objeto del mundo físico. 
+	
+	\begin{figure}[h!]
+		\centering
+		
+		\includegraphics[width=0.45\columnwidth]{imagenes/seleccion0.png}
+		
+		
+		\caption{Ejemplo de selección por manipulación directa de un nodo.}
+		\label{fig:seleccion0}
+	\end{figure}
+	
+	\item Experimento 2. Técnica de Selección: Manipulación por Gestos.
+	
+	La manipulación por gestos consiste en seleccionar elementos en el entorno inmersivo mediante gestos con la mano virtual. Específicamente para agarrar un objeto se debe realizar el gesto de `Pinch', basada en la metáfora del pellizco, y para soltar el elemento se debe de realizar el gesto de `Stop', que consiste en colocar la palma abierta. 
+	
+	En la Figura \ref{fig:select1} el nodo es seleccionado con el primer gesto descrito, luego en la Figura \ref{fig:select2} el nodo deja de estar seleccionado mediante el segundo gesto. Esta técnica no es del todo intuitiva, debido a que ambos gestos para el usuario pueden tener otro significado o al realizarlos pueden esperar realizar una acción diferente.
+	
+	\begin{figure}[h!]
+		\centering
+		\subfigure[]
+		{
+			\includegraphics[width=0.40\columnwidth]{imagenes/seleccion1.png}
+			\label{fig:select1}
+		}
+		\subfigure[]
+		{
+			\includegraphics[width=0.40\columnwidth]{imagenes/seleccion2.png}
+			\label{fig:select2}
+		}
+		\caption{Ejemplo de selección por gestos de un nodo. (a) Selección del elemento. (b) Des-selección del elemento.}
+		\label{fig:seleccion-12}
+	\end{figure}
+	
+	\item Experimento 3. Técnica de Selección: Manipulación Artificial.
+	
+	Esta técnica fue propuesta aprovechando la propiedad del mundo virtual que permite, previa configuración, atravesar los objetos. Por tanto, para seleccionar un objeto solo es necesario atravesarlo utilizando la mano virtual. Para dejar de seleccionar el elemento solo se requiere atravesarlo nuevamente. 
+	
+	En la Figura \ref{fig:select3} el cubo es seleccionado cambiando de color a verde y en la Figura \ref{fig:select4} el cubo regresa a su estado anterior.
+	
+	\begin{figure}[h!]
+		\centering
+		\subfigure[]
+		{
+			\includegraphics[width=0.40\columnwidth]{imagenes/seleccion3.png}
+			\label{fig:select3}
+		}
+		\subfigure[]
+		{
+			\includegraphics[width=0.40\columnwidth]{imagenes/seleccion4.png}
+			\label{fig:select4}
+		}
+		\caption{Ejemplo de selección por manipulación artificial de un nodo. (a) Selección del nodo. (b) Des-selección del nodo.}
+		\label{fig:seleccion-34}
+	\end{figure}
+	
+\end{itemize}
+
+\section{Implementación del Web Crawler para la Recuperación de Información de Alicia}
+
+El modelo de interfaz propuesto (AliciaVR) está conectado con la base de datos científica ALICIA, para recuperar información de este sistema informático se desarrollará e implementará un programa del tipo rastreador que se comunicará automáticamente con ALICIA y extraerá, mediante análisis del código fuente de sus vista, la información que necesitamos para visualizar en nuestra interfaz basada en realidad virtual.
+
+Para lo cual se utilizó la librería \textit{Barebones Ultima Web Crawler} y el servidor web \textit{Wamp Server 5.02} instalado en modo local.
+
+La implementación implica estudiar el patrón adecuado para realizar el rastreo y extracción de recuperación de forma automatizada, en la Figura \ref{fig:codigocrawler} se muestra un fragmento del código fuente del rastreador escrito en el lenguaje \textit{PHP}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\columnwidth]{imagenes/crawlercod.png}
+	\caption{Web Crawler Configuración.}
+	\label{fig:codigocrawler}
+\end{figure}
+
+La activación del rastreador dependerá de todo aquel programa que lo necesite, su ejecución es mediante \textit{URL} de la forma:\\
+
+ ``http://localhost/Alicia/index.php?consulta=RECUPERA+INFORMACION''\\
+ 
+Para recuperar la información de ALICIA se diseñó la secuencia siguiente:
+
+\begin{itemize}
+	\item Configuración local del servidor web.
+	\item Codificación de la cadena de conexión a ALICIA.
+	\item Establecer los parámetros de búsqueda en basé al patrón \textit{DOM}.
+	\item Guardar las consultas en texto plano (\textit{.txt}) para ser leídas por el motor de realidad virtual \textit{Unity3D}.
+	
+\end{itemize}
+
+\section{Desarrollo del Motor de Reconocimiento de Voz y Conversión a Texto}
+
+Para el motor de reconocimiento se utilizó la librería \textit{Intel Perceptual Computing} que incorpora funciones de conversión de audio a texto plano. Para un excelente reconocimiento de voz, se ha sumado al diseño del prototipo un micrófono inalámbrico certificado (Figura \ref{fig:logitech}) por \textit{Dragon Natural Speaking} que es la empresa líder en el reconocimiento de voz. Se ha desarrollado una librería en C\# .Net para poder capturar el audio del usuario en todo momento. para luego ser enviado por \textit{Sockets} a \textit{Unity3D} utilizando protocoles de red, donde está implementado un puerto de escucha, por donde se recibirán todos los comandos de voz del usuario. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{imagenes/tmp16.png}
+	\caption{Adición del Micrófono Inalámbrico Certificado \textit{Logitech H600}.}
+	\label{fig:logitech}
+\end{figure}
+
+ En la Figura \ref{fig:voz00} se muestra la abstracción de lo expuesto, las ondas sonoras que produce el usuario al hablar, son captadas por el micrófono y mediante la librería \textit{Intel Perceptual Computing} son interpretadas y convertidas a texto plano.
+ 
+ \begin{figure}[h]
+ 	\centering
+ 	\includegraphics[width=0.8\columnwidth]{imagenes/tmp11.png}
+ 	\caption{Captura de Voz y Conversión a Texto.}
+ 	\label{fig:voz00}
+ \end{figure}
+ 
+ La librería \textit{Intel Perceptual Computing} esta escrita en el lenguaje de programación \textit{C\#}, su funcionamiento está adecuado para trabajar con el idioma inglés, pero instalando el paquete \textit{Dragon Assistant Language Pack es-US 1.1.2} es posible el reconocimiento de voz para el idioma español.
+ 
+ Utilizando la librería en mención se desarrolló y configuró el aplicativo de escritorio utilizando Visual \textit{Studio Community 2013}. Para poner en marcha el motor de reconocimiento de voz se requiere iniciar este aplicativo después de iniciar el aplicativo de realidad virtual desarrollado con \textit{Unity3D}, esto se debe a que en el aplicativo \textit{Unity3D} esta implementado un servidor de escucha y en el aplicativo para el reconocimiento de voz está implementado el cliente para el envío, en texto plano, de la voz del usuario al servidor.
+ 
+ En la Figura \ref{fig:aplicativoz} se muestra la interfaz del motor de reconocimiento de voz.
+ 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\columnwidth]{imagenes/vozaplicativo.png}
+	\caption{Interfaz del Motor de Reconocimiento de Voz.}
+	\label{fig:aplicativoz}
+\end{figure}
+
+\section{Implantación del Analizador Sintáctico}
+
+Para el análisis sintáctico de cada uno de los comandos de voz a fin de obtener su interpretación, se utilizó la librería \textit{Freeling}, por ser la que mejores funciones posee para el tratamiento del lenguaje español.
+
+Este proceso de análisis sintáctico, implica primeramente separar cada una de las palabras, parsear su contenido para luego agregar etiquetas del tipo: Verbo, Adjetivo, Sustantivo, Adverbio, Artículo, Pronombre, etc.
+
+En la Figura \ref{fig:voz} se muestra el ejemplo del análisis de una frase, donde el usuario dijo: ``Alicia, guárdame este artículo por favor''. Generando su respectivo árbol sintáctico.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.95\columnwidth]{imagenes/tmp12.png}
+	\caption{Generación del Árbol Sintáctico para una Consulta de Voz .}
+	\label{fig:voz}
+\end{figure}
+
+\textbf{El Modelo Propuesto}, integrando todo lo anterior, el esquema del modelo propuesto de interfaz para la exploración de artículos científicos con realidad virtual y procesamiento del lenguaje natural, llamado en la investigación AliciaVR quedaría descrito gráficamente en la Figura \ref{fig:esquema-vr}.\\
+
+Básicamente el modelo propuesto, empieza con la consulta de un usuario que desea buscar un artículo científico en ALICIA, las consultas las realiza por voz, para lo cual el motor de reconocimiento de voz la detecta y la convierte en texto plano, luego esta información es procesada por el analizador semántico, donde se genera el respectivo árbol sintáctico, este analizador diferencia los comandos de interacción de la consulta, para luego enviar esta última al rastreador, que se encargará de conectarse con ALICIA y recuperar la información que solicita el usuario, finalmente los resultados obtenidos son ploteados en el entorno inmersivo donde el usuario empieza a interactuar. Si el usuario está conforme el proceso termina, de lo contrario inicia una nueva búsqueda. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.85\columnwidth]{imagenes/esquemavr.png}
+	\caption{Esquema del modelo propuesto AliciaVR.}
+	\label{fig:esquema-vr}
+\end{figure}
+
+\section{Evaluación del Modelo Propuesto con respecto al Tradicional}
+
+Para evaluar el modelo de interfaz propuesto (AliciaVR) con respecto al modelo tradicional (Alicia-Web) se hará uso del estándar ISO 9241 Usabilidad de Interfaces, que específicamente evalúa tres dimensiones de la interacción del usuario con la interfaz: Eficacia, Eficiencia y Satisfacción.
+
+\subsection{Variables de Estudio según la ISO 9241 - Usabilidad de Interfaces}
+
+El estándar ISO 9241 define la Usabilidad como ``El grado en el que un producto puede ser utilizado por usuarios específicos para conseguir objetivos específicos con efectividad, eficiencia y satisfacción en un determinado contexto de uso'' (ISO 9241-11, 1998).
+
+\subsection{Elección y Medición de Variables}
+
+\textbf{Eficacia}: Es la exactitud e integridad con la que los usuarios alcanzan los objetivos especificados, y por tanto implica la facilidad de aprendizaje, la ausencia de errores del sistema o la facilidad del mismo para ser recordado. Las métricas utilizadas en la investigación son: 
+
+\begin{itemize}
+\item
+Número de tareas importantes realizadas.
+\item
+Número de funciones relevantes utilizadas.
+\item
+Número de tareas completadas con éxito al primer intento.
+\item
+Número de llamadas para soporte.
+\item
+Número de accesos a la ayuda.
+\item
+Número de funciones aprendidas.
+\end{itemize}
+
+\textbf{Eficiencia}: Es la relación de los recursos empleados (esfuerzo, tiempo, etc.) con la exactitud e integridad con la que los usuarios alcanzan los objetivos especificados. Las métricas utilizadas en la investigación son: 
+
+\begin{itemize}
+\item
+Tiempo empleado en el primer intento.
+\item
+Tiempo empleado en reaprender funciones.
+\item
+Tiempo productivo.
+\item
+Tiempo para aprender características.
+\item
+Tiempo para reaprender características.
+\item
+Tiempo empleado en la corrección de errores.
+\end{itemize}
+
+\textbf{Satisfacción:} Es un factor subjetivo que implica una actitud positiva en el uso del producto. Las métricas utilizadas en la investigación son: 
+
+\begin{itemize}
+\item
+Calificación de la satisfacción con las características importantes.
+\item
+Calificación de la facilidad de aprendizaje.
+\item
+Calificación del tratamiento de errores.
+\item
+Tasa de uso voluntario del producto.
+\end{itemize}
+
+\subsection{Preparación del Experimento con Usuarios}
+
+Luego de estar todos los dispositivos interconectados (Oculus Rift, Leap Motion, Auricular Wireless y Ordenador) e iniciados todos los módulos software (Entorno de Inmersión, Motor de reconocimiento de voz, Servidor web para el rastreador, etc.), procedemos a la evaluación del modelo de exploración de artículos científicos con realidad virtual y procesamiento del lenguaje natural (AliciaVR) y del modelo tradicional de ALICIA (Alicia-Web, nombrado así para la presente investigación) con cinco usuarios, debido a que esta es la cantidad de usuarios recomendada por Nielsen (\citeyear{nielsen2000you}) para la evaluación de interfaces. También se dispone de una conexión a internet de alta velocidad de 8 \textit{mbps}.\\
+
+A cada uno de ellos se les asignará la tarea de explorar artículos científicos por treinta minutos en cada interfaz, en ambos modelos de interfaces. Durante el experimento está contemplado que el usuario pida ayuda a un experto, quien al mismo tiempo se encargará de la observación y documentación del experimento.\\
+
+El primer modelo a evaluar es el de exploración de artículos científicos con realidad virtual y procesamiento del lenguaje natural, en este modelo el usuario está inmerso en el software, puede comunicarse por voz con el buscador, puede tocar los elementos consultados. \\
+
+En la Figura \ref{fig:modelorv} se muestra a una usuaria utilizando la interfaz propuesta \textit{AliciaVR}. Lo que observa la usuaria se muestra en la Figura \ref{fig:modelorv2}.\\
+
+El segundo modelo a evaluar es el de exploración de artículos científicos de forma tradicional, que es la interfaz por defecto de la base de datos científica Alicia, en este modelo de interfaz, el usuario dispone del monitor para visualizar las consultas, y únicamente utiliza el ratón y teclado para interactuar. \\
+
+En la Figura \ref{fig:modelotr} se muestra a una usuaria utilizando la interfaz tradicional \textit{Alicia-Web}. Lo que observa la usuaria se muestra en la Figura \ref{fig:modelotr2}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{imagenes/tmp14.png}
+	\caption{Evaluación del primer modelo de interfaz - AliciaVR.}
+	\label{fig:modelorv}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.95\columnwidth]{imagenes/aliciavr.png}
+	\caption{Vista del usuario - AliciaVR.}
+	\label{fig:modelorv2}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{imagenes/tmp15.png}
+	\caption{Evaluación del modelo tradicional de interfaz - Alicia-Web.}
+	\label{fig:modelotr}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.95\columnwidth]{imagenes/aliciaweb.png}
+	\caption{Vista del Usuario - Alicia-Web.}
+	\label{fig:modelotr2}
+\end{figure}
+
+
+
+

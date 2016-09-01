@@ -1,0 +1,135 @@
+
+%------------ Ejemplo de figura y su referencia.-----
+Um modelo de pesquisa similar para LSH é mostrado na Figura \ref{fig:search_model} (b).
+
+\begin{figure}[htp]
+\centering
+\subfigure[]
+    {
+    \includegraphics[width=0.32\columnwidth]{images/prueba.png}%\label{fig:slimbe:a}
+    \label{fig:am_model}
+    }
+\subfigure[]
+    {
+    \includegraphics[width=0.37\columnwidth]{images/prueba.png}%\label{fig:slimbe:a}
+    \label{fig:lsh_model}
+     }
+\caption{Unificação do modelo de consulta por similaridade. (a) Os Métodos de Acesso Métricos (MAMs). (b)  \textit{Locality Sensitive Hashing} (LSH).}
+\label{fig:search_model}
+\end{figure}
+
+\section{Consultas por Similaridade}\label{sec:consultas-similaridade}
+
+%----------- ejemplo de párrafo.------
+\paragraph{Consulta por Abrangência - $Rq(q, r)$}
+Consulta que visa recuperar objetos semelhantes a $q$ que se encontram dentro do raio de consulta $r$.  Ou, mais formalmente:
+
+%----------- ejemplo de ecuación. -----------
+\begin{equation}
+    Rq(q, r) = \{ u \in \mathbb{S} | d(u, q) \leq r \}
+\end{equation}
+
+%--------------------- fin de ejemplos...-------
+
+En la Figura \ref{fig:time-series-representation}.
+
+\noindent Assim, com a Equação \ref{eq:sax} pode-se definir palavras de diferentes resoluções, por exemplo para uma série temporal $T$ as palavras SAX com comprimento da palavra $w=4$ e resoluções $2,4,8,16$ são:
+\begin{table}[h]
+	\begin{tabular}{lclcl}
+		$SAX(T, 4, 16)$ & = &$T^{16}$ & =& $\{1100, 1101, 0110, 0001\}$\\
+		$SAX(T, 4, 8)$ & = &$T^8$ & = & $\{110, 110, 011, 000\}$\\
+		$SAX(T, 4, 4)$ & = &$T^4$ & = & $\{11, 11, 01, 00\}$\\
+		$SAX(T, 4, 2)$ & = &$T^2$ & = & $\{1, 1, 0, 0\}$\\
+	\end{tabular}
+\end{table}
+
+
+%------------------ ejemplo de tabla...--------
+
+\begin{table}[htbp]
+	\centering
+	\caption{Trabalhos recentes em indexação de séries temporais.}
+	\begin{tabular}{ | l | l | l | c | }
+		\hline
+		\textbf{  Trabalho  } & \textbf{Dimensão}&\textbf{Dimensão}&\textbf{Método de}\\
+		\textbf{ } & \textbf{original}&\textbf{reduzida}&\textbf{redução}\\
+		\hline
+		iSAX \cite{iSAX} & 480, 960,  & 16, 24,  & iSAX \\
+		& 1440, 1920  & 32, 40 & \\
+		\hline
+		TS-Tree \cite{TSTREE}  &256, 512, 1024  & 16, 24, 32 & PAA \\
+		
+		\hline
+		Scaled and  & 32, 64, 128, & 21, 43, 85, & \textit{Uniform scaling} \\
+		Warped Matching \cite{ScalingTimeSeriesQuerying}& 256, 512, 1024 & 171, 341, 683 & \\
+		
+		\hline
+		Exact indexing&  32, 256, 1024 &    16  & PAA \\
+		of DTW \cite{KeoghIndDTW} &    &   (todos) & \\
+		\hline
+	\end{tabular}
+	\label{timeseriesIndexing}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%% ejemplo de algoritmo ---------------------------------
+\begin{algorithm}
+    \caption{Procurar-1-Motif-Força-Bruta(T, n, R)}
+    \begin{algorithmic}[1]
+    \REQUIRE  A série temporal $T$, o comprimento do $motif$ $n$ e uma tolerância $R$
+    \ENSURE   O \textit{motif}  mais significativo em $T$  o qual tem o maior número de casamentos não triviais .
+
+   \STATE O-melhor-motif-ate-agora = 0;
+    \STATE posição-do-melhor-motif-ate-agora = null;
+
+    \FOR{$i = 1$ to comprimento$(T) - n + 1$  }
+        \STATE contagem = 0;
+        \STATE apontadores  = null;
+        \FOR{$j = 1$ to comprimento$(T) - n + 1$  }
+            \IF { CasamentoNãoTrivial( $C[i:i+n-1], C[j:j+n+1], R$) }
+                \STATE contagem = contagem + 1;
+                \STATE apontadores  = anexar(apontadores , j);
+            \ENDIF
+        \ENDFOR
+        \IF {contagem $>$ O-melhor-motif-ate-agora}
+            \STATE O-melhor-motif-ate-agora = contagem ;
+            \STATE posição-do-melhor-motif-ate-agora = i;
+            \STATE motifs = apontadores ;
+        \ENDIF
+    \ENDFOR
+\end{algorithmic}
+\label{alg:findmotifs}
+\end{algorithm}
+
+%-------------
+\Error{Aquí coloco lo que me falta arreglar.}
+
+% --------------- Ejemplo de enumeraciones.----
+
+\begin{enumerate}
+	\item  \textbf{SYNT16}  Este conjunto de dados sintético contém 100000 vetores de dimensão 16, distribuídos uniformemente em grupos de 10 em um hipercubo 16-d.
+	
+	\item  \textbf{SYNT32} Semelhante ao SYNT16, mas contém 100000 vetores de \mbox{dimensão 32.}
+	
+	\begin{itemize}
+		\item AGRODATA-SOUTH. Séries temporais climaticas, fornecidas pelo Agritempo\footnote{\url{http://www.agritempo.gov.br/}}, que consistem de medidas diárias de precipitação e temperatura média coletadas por 19 estações meteorológicas localizadas no sul do estado de São Paulo, no período 1994-2008.
+		
+		\item AGRODATA-SOUTHEASTERN.  Séries temporais climaticas, também fornecido pelo Agritempo, consitem de medidas diárias de precipitação e temperatura média medida por 10 estações meteorológicas localizadas no sudeste do estado de São Paulo, no período 1995-2009.
+	\end{itemize}
+	
+\end{enumerate}
+
+%--------------------------------- 
+
+\begin{description}
+	\item [\itshape A dependência de parâmetros de domínio,] como  \begin{inparaenum}[ a\upshape)]
+		\item  o número de funções \textit{hash}; e
+		\item  número de subíndices,
+	\end{inparaenum}  pode-se  inicialmente  resolver limitando a largura do espaço, mas precisa-se de uma abordagem mais abrangente para a escalabilidade da técnica. Assim, define-se um parâmetro de escala multirresolução para aproximar o grau de adaptabilidade dos parâmetros de domínio conforme a base de dados cresce.   Este parâmetro será obtido usando a dimensionalidade intrínsica dos dados obtida com a teoria de fractais \cite{DBLP:journals/jidm/TrainaTF10}.
+	
+	
+	Os detalhes do processo de configuração do método de indexação, em que se faz a inicialização dos parâmetros de domínio, são apresentados no Algoritmo \ref{alg:initparams}.
+	
+	
+\end{description}
+

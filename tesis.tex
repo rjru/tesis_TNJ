@@ -1,0 +1,207 @@
+\documentclass[11pt,twoside]{book}
+\usepackage[spanish]{babel}
+\usepackage{natbib}
+\usepackage{url}
+
+% referencias coma na pagina anterior, etc
+\usepackage{bookman}
+\usepackage[spanish]{varioref}
+% acentuación
+\usepackage[latin1]{inputenc}
+\usepackage{indentfirst}
+\usepackage{ upgreek }
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{fancybox}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+%\usepackage[bbgreekl]{mathbbol}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{paralist}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{amsmath}
+
+\definecolor{red}{rgb}{0.9,0.1,0.1}
+\definecolor{blue}{rgb}{0,0.1,0.8}
+
+\usepackage[pdftex, plainpages=false, hyperfootnotes=false]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+%%% bibliografia
+\usepackage[sf,outermarks,clearempty]{titlesec}
+
+\usepackage[pdftex]{geometry}
+%márgenes del papel 
+\geometry{a4paper,left=3cm,right=3cm,top=3cm,bottom=3cm,twoside}
+%\geometry{a4paper,left=3cm,right=3cm,top=3cm,bottom=3cm,twoside}
+
+
+\usepackage{acronym}
+
+\usepackage[ruled,vlined,portugues,algochapter]{algorithm/algorithm2e}
+\usepackage{algorithm/algorithmic-pt}  % Algoritmos em Portugues
+\usepackage{eqparbox,array}
+\renewcommand\algorithmiccomment[1]{%
+    {// \small{\textit{#1}}}%
+}
+\newcommand\LONGCOMMENT[1]{%
+  \hfill\#\ \begin{minipage}[t]{\eqboxwidth{COMMENT}}#1\strut\end{minipage}%
+}
+
+\acrodef{CBIR} {Content-based Image Retrieval}
+\acrodef{MAM}  {Métodos de Acceso Métrico}
+\acrodef{SAM}  {Métodos de Acceso Espacial}
+\acrodef{MAE}  {Métodos de Acesso Espaciais}
+
+\acrodef{DTW}  {Dynamic Time Warping}
+\acrodef{LSH}  {Locality Sensitive Hashing}
+
+\newtheorem{defi}{{\it Definición}}[chapter]
+\newcommand{ \Correction }[ 1 ] {\textcolor{black}{#1}}
+\newcommand{ \NewMaterial }[ 1 ] {\textcolor{black}{#1}}
+\newcommand{ \ConnectDots }[ 1 ] {\textcolor{black}{#1}}
+\newcommand{ \NewMaterialGPU }[ 1 ] {\textcolor{green}{#1}}
+\newcommand{ \Error }[ 1 ] {\textcolor{red}{#1}}
+
+% Different font in captions
+\newcommand{\captionfonts}{\small}
+
+%defina o tamanho da barra na tabela de cronograma
+\newcommand{\barrai}[1]{\rule{#1}{2mm}}
+\newcommand{\barrad}[2]{\hspace{#1} \rule{#2}{2mm}}
+
+% declara 'e' para função exponencial
+\DeclareMathOperator{\e}{e}
+
+\makeatletter  % Allow the use of @ in command names
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{{\captionfonts #1: #2}}%
+  \ifdim \wd\@tempboxa >\hsize
+    {\captionfonts #1: #2\par}
+  \else
+    \hbox to\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}
+\makeatother   % Cancel the effect of \makeatletter
+
+%fonte
+%\usepackage{ae}
+%\usepackage[T1]{fontenc}
+%\DeclareFixedFont{\numberfont}{T1}{phv}{bx}{n}{2cm}
+
+%%% redefine o formato do título
+\titleformat{\chapter}[display]
+  {\normalfont\Large\sffamily
+  }
+  {%\titlerule[3pt]%
+   \filright
+   \rule[32pt]{.7\linewidth}{4pt}
+   \hspace{-11pt}
+   \shadowbox{
+   \begin{minipage}{.18\linewidth}
+     \begin{center}
+       \textsc{\Large\chaptertitlename}\\
+       \vspace{1ex}
+       { \thechapter}\\
+       \vspace{1ex}
+     \end{center}
+   \end{minipage}}
+  }
+  {0pt}
+  {\filcenter
+   \Huge
+   }
+  [\hfill\rule{.8\textwidth}{0.5pt}\\
+     \vskip-1.8ex\hfill\rule{.7\textwidth}{3pt}]
+
+
+% primeira letra do texto
+\font\largefont = pzcmi7t scaled 6500
+\newcommand{\versal}[1]{{\noindent
+    \setbox0\hbox{\largefont #1 }%
+    \count0=\ht0                   % height of versal
+    \count1=\baselineskip          % baselineskip
+    \divide\count0 by \count1      % versal height/baselineskip
+    \dimen1 = \count0\baselineskip % distance to drop versal
+    \advance\count0 by 1\relax     % no of indented lines
+    \dimen0=\wd0                   % width of versal
+    \global\hangindent\dimen0      % set indentation distance
+    \global\hangafter-\count0      % set no of indented lines
+    \hskip-\dimen0\setbox0\hbox to\dimen0{\raise-\dimen1\box0\hss}%
+    \dp0=0in\ht0=0in\box0}}
+
+
+%-------------PARA CITAR PAGINAS--------------------
+
+
+%\hyphenpenalty=2000
+%\tolerance=2000
+\hyphenpenalty=5000
+\tolerance=5000
+
+
+\hyphenation{di-men-sio-na-li-da-de}
+\hyphenation{uni-di-men-sional}
+\hyphenation{multi-di-men-sional}
+\hyphenation{re-pre-sen-ta-coes}
+
+%aquí comienza el documento.
+
+\begin{document}
+\include{text/capa}
+
+\pagenumbering{roman}
+
+\include{text/resumen}
+
+%\cleardoublepage
+
+\addcontentsline{toc}{section}{Sumario}
+\tableofcontents
+
+%\cleardoublepage
+%----------- lista de símbolos ----------------
+%\addcontentsline{toc}{section}{Lista de Símbolos}
+%\chapter*{Lista de Símbolos}
+
+%\setstretch{1.25}
+%\begin{tabular}{ l l l l }
+    %$\mathbb{S}$ & universo %de datos\\
+%\end{tabular}
+%\cleardoublepage
+%\singlespacing
+
+%------- agregamos la lista de todos los elementos --
+
+\listoffigures
+\addcontentsline{toc}{section}{Lista de Figuras}
+\cleardoublepage
+\listoftables
+\addcontentsline{toc}{section}{Lista de Tablas}
+\cleardoublepage
+
+%\listofalgorithms
+%\addcontentsline{toc}{section}{Lista de Algoritmos}
+%\cleardoublepage
+
+\pagestyle{plain}
+\onehalfspace
+\pagenumbering{arabic}
+%agregando los archivos
+\input{text/capitulo1-introduccion}
+\input{text/capitulo2-conceptos_previos}
+%\input{text/capitulo3-desarrollo}
+%\input{text/capitulo4-resultados}
+%\input{text/capitulo5-conclusiones}
+
+%apalike-ieeetr
+\bibliographystyle{apalike}
+\bibliography{text/bibliografia}
+\addcontentsline{toc}{chapter}{Referencias Bibliográficas}
+
+\end{document}

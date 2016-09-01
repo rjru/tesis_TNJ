@@ -1,0 +1,666 @@
+
+\chapter{Conceptos Previos}
+
+\section{Minería de datos temporales}\label{sec:vr_mt}
+Recientemente, el uso creciente de datos temporales, en particular los datos de series de tiempo, ha puesto en marcha varios intentos de investigación y desarrollo en el campo de la minería de datos. Las series temporales son una clase importante de objetos de datos temporales, y se puede obtener fácilmente de las aplicaciones científicas y financieras (por ejemplo, el electrocardiograma (ECG), la temperatura diaria, los totales de ventas semanales, y los precios de los fondos de inversión y acciones). Una serie de tiempo es un conjunto de observaciones realizadas por orden cronológico. La naturaleza de los datos de series de tiempo incluye: datos de gran tamaño, de alta dimensionalidad y actualización de forma continua. series temporales de datos por otra parte, que se caracteriza por su naturaleza numérica y continua, siempre se considera como un todo en lugar de campo numérico individual. Por lo tanto, a diferencia de las bases de datos tradicionales, donde la similitud de búsqueda se basa coincidencia exacta, búsqueda de similitudes en los datos de series de tiempo se lleva a cabo normalmente de forma aproximada \citep{fu:2011:review}.
+
+La diversidad de dominios es bastante significativo y se extiende desde el ámbito médico al financiero. Algunos ejemplos de estos datos son los siguientes \citep{fayyad:2002:information}:
+
+
+\begin{itemize}
+  \item Datos de sensores: Datos de sensores suele ser recolectada por una amplia variedad de hardware y otros dispositivos de vigilancia. Por lo general, estos datos contienen lecturas continuas sobre el objetos. Por ejemplo, los datos del medio ambiente se recoge comúnmente con diferente
+  tipos de sensores que miden la temperatura, la presión, la humedad, y así sucesivamente. datos de sensores es la forma mas común de los datos de series de tiempo.
+  
+  \item Dispositivos médicos: Muchos dispositivos médicos tales como el electrocardiograma (ECG) y el electroencefalograma (EEG) producen flujos continuos de datos de series de tiempo. estos representan
+  mediciones del funcionamiento del cuerpo humano, tales como el latido del corazón,
+  la frecuencia del pulso, la presión sanguínea, etc. en tiempo real de datos también se obtiene de los pacientes en la unidad de cuidados intensivos (UCI) para supervisar su estado.
+  
+  \item Datos de los mercados financieros: datos financieros, tales como precios de las acciones, a menudo es temporal. Otro formas de datos temporales incluyen precios de los productos, las tendencias industriales y económica indicadores.
+  
+\end{itemize}
+
+
+\subsection{Series de tiempo}
+Una serie de tiempo es una colección de valores obtenidos de medidas secuenciales a través del tiempo y pueden ser clasificados en tres tipos según \citep{mitsa:2010:temporal}:
+
+\begin{itemize}
+  \item \textit{Time series}. Representan medidas ordenandas de valores reales en intervalos de tiempos regulares.
+  \item \textit{Temporal sequences}. Estas pueden ser marcas de tiempo en intervalos regulares o irregulares. Un ejemplo de una secuencia temporal es una secuencia de marcas de tiempo de las compras de un cliente en un sitio Web.
+  \item \textit{Semantic temporal data}.  Se definen en el contexto de una ontología. Por ejemplo, "Señor" y "mediana edad" están definidos en el contexto de una  definición formal de tipos, propiedades, y relaciones entre entidades que realmente o fundamentalmente existen para un dominio de discusión, en particular de la vida humana.
+\end{itemize}
+
+Los datos de series de tiempo según su naturaleza pueden ser univariante o multivariante. En los datos de series temporales univariantes, un atributo de comportamiento individual está asociado a cada instante de tiempo. En series temporales de datos multivariados, múltiples atributos de comportamiento estan asociados a cada instante de tiempo. La dimensionalidad de la serie de tiempo, por lo tanto, se refiere al número de atributos de comportamiento que están siendo rastreados \citep{Aggarwal:2015} y se pueden definir formalmente de la siguiente forma:
+
+\begin{defi}
+(Serie de tiempo univariante) Una serie de tiempo $T$ es una secuencia ordenada de $n$ variables de valores reales.  \\
+
+\begin{center}
+      $T=(t_1,....,t_n)$, \; $t_i$ \;   $\in$   $\mathbb{R}$
+\end{center}
+
+\end{defi}
+
+\begin{defi}
+  (Serie de tiempo Multivariante) una serie de tiempo de longitud $n$ y dimensionalidad $d$, contiene $d$ características numéricas en cada una de las $n$ marcas de tiempo $t_1,....,t_n$. Por lo tanto, el conjunto de valores recibidos en una marca de tiempo $t_i$ es $\bar{Y}_i=(y_i^1,...,y_i^d)$. El valor de el $jth$ series de una marca de tiempo $t_i$ es $y_j^i$.
+\end{defi}
+
+\subsection{Representación de series temporales}
+
+
+ Una de las características de las series de tiempo es su alta dimensionalidad, lo que generalmente ocasiona problemas en el procesamiento como consecuencia a su alto costo computacional, debido a esto se necesita aplicar métodos de reducción de dimensión (es decir reducir el número de puntos) de los datos originales, los beneficios ganados son el fácil almacenamiento, rapidez en el procesamiento y eliminación de ruido \citep{esling:2012:time}, una de las desventajas también es que dependiendo el método empleado se tendrá una perdida de información según cuanto de dimensión se quiera reducir.
+ Existen muchas técnicas para la representación de series temporales y es posible clasificar esos enfoques según la transformación aplicada, Tanto en \citep{tsclus_:decade_:review} como también en \citep{lovric:2011:international} muestra una taxonomía para dividir las representaciones de series de tiempo en cuatro categorías como lo muestra en la figura \ref{fig:mesh1} 
+ 
+ \begin{defi}
+  (Representación de series de tiempo) dado una serie de tiempo $F_i={f_1,...,f_t,...,f_T}$, la representación es la transformación de la serie de tiempo a un vector de dimensionalidad reducida $F_i={f_i,...,f_x}$ donde $x<T$ y si dos series son similares en su espacio original entonces tus representaciones deberían ser similares en el espacio de transformación también. 
+ \end{defi}
+ 
+ \begin{figure}[h]
+  \centering
+  \includegraphics[width=1\textwidth]{imagenes/rst.png}
+  \caption{Jerarquía de diferentes enfoques de representación de series de tiempo}
+  \label{fig:mesh1}
+ \end{figure}
+
+\subsubsection{Data adaptive}
+Este enfoque implica que el parámetro de transformación se ira modificando dependiendo de la naturaleza de los datos disponibles, en otras palabras usan una longitud no igual de segmentación para la representación de series de tiempo.
+
+\textit{Symbolic Aggregate Approximation (SAX)}
+
+Este método de representación permite una reducción de dimensionalidad de una longitud $n$ a otra cadena de caracteres de longitud $w$ donde se entiendo que siempre $w$ será menor que $n$, esta proceso de discretización usa como paso intermedio el algoritmo de representación  Piecewise Aggregate Approximation
+(PAA) para luego simbolizar esta representación en un cadena discreta. Dado que una serie de tiempo tiene una distribución Gaussiana \citep{rjam:2000:introduction} que es la base del algoritmo $SAX$, se puede determinar "breakpoints" que producirán áreas $a$ de igual tamaño bajo la curva de Gaussinaa\citep{rjam:2000:introduction}, el algoritmo hace uso de los siguientes conceptos:
+
+\begin{itemize}
+  \item $Breakpoints$: los $Breakpoints$ áreas de igual tamaño que dividen una distribución Gaussiana para ser aplicadas en $SAX$ estas valores ya están determinados en el siguiente (cuadro \ref{fig:bp}).
+  \item $Word$: representan los símbolos que estarán en cada intervalo del $Breakpoint$.
+\end{itemize}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.5]{imagenes/breakpoint.PNG}
+  \caption{Una tabla de consulta que contiene los puntos de interrupción que dividen una distribución de Gauss en un número arbitrario (3-10) de las regiones equiprobables \protect\citep{lin:2007:experiencing}}
+  \label{fig:bp}
+\end{figure}
+
+En la (figura \ref{fig:sax}) se muestRa un ejemplo gráfico de como funciona $SAX$.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.5]{imagenes/sax.PNG}
+  \caption{Una serie de tiempo es discretizado mediante la obtención de una primera aproximación PAA y luego usando los $breakpoints$ predeterminados para asignar los coeficientes de PAA en símbolos SAX. \protect\citep{lin:2007:experiencing}}
+  \label{fig:sax}
+\end{figure}
+
+
+\subsubsection{Non-data adaptive} 
+los parámetros de la transformación permanecen siendo los mismos para toda la serie de tiempo ignorando la naturaleza de la misma, en  \textit{Non-data adaptive} la longitud de la segmentación es de igual longitud, algunos de estos métodos son:
+
+\textit{Piecewise Aggregate Approximation (PAA)}
+  
+En este método, las series de tiempo se divide en segmentos k de igual longitud y luego cada segmento se sustituye con un valor constante, que es el valor medio del segmento. A continuación, estos valores medios se agrupan en un vector, que representa la marca del segmento \citep{mitsa:2010:temporal}. Un ejemplo se muestra en la (Figura \ref{fig:paa}).
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.5]{imagenes/paa.PNG}
+  \caption{Representación PAA de una serie de tiempo}
+  \label{fig:paa}
+\end{figure}
+
+Una definición más formal de PAA se da a continuación, se tiene una serie de tiempo $C$ de longitud $n$ puede ser representado en un espacio de dimensión $w$ por un vector $\bar{C}=\bar{c_1},...,\bar{c_w}$. el elemento $i^{th}$ de $\bar{C}$ es calculado por la siguiente ecuación:
+\begin{equation}
+\bar{c_i} = \frac{w}{n} \sum_{j = \frac{n}{w}(i-1)+1} ^{\frac{n}{w}i}c_j
+\end{equation}
+En pocas palabras, para reducir la serie de tiempo de $n$ dimensiones a $w$ dimensiones, los datos se divide en $w$ "marcos" de igual tamaño. El valor medio de los datos incluidos en una trama se calcula y un vector de estos valores se convierte en la representación reducida de datos \citep{lin:2007:experiencing}.
+
+\textit{Discrete Fourier Transform (DFT)}
+
+Wavelets son más efectivos cuando la mayoría de variación in la serie puede ser capturado en una región especifica local de la serie. En casos donde la serie contiene periodicidad global, el DFT es más efectivo \citep{Aggarwal:2015}.
+El DFT representa una serie de tiempo en el dominio frecuencia, el coeficiente $F_k$ de una serie de tiempo $X={x_0,x_2,...,x_{n-1}}$ es un número complejo dado por:
+
+\begin{equation}
+F_k = \sum_{i=0}^{N-1} x_i e^{-j2\pi ik/N}
+\end{equation}
+Donde: $k$ = 0, 1,...,N-1.
+
+Una de las ventajas de usar DFT en procesamiento de señales es que existe un algoritmo rápido para su calculo, conocido como
+\textit{fast fourier transform} (FFT) su complejidad computacional es $O(n logn).$ 
+
+\subsubsection{Model-based} 
+Representan una series de tiempo de una forma estocástica, en estadística es un concepto matemático que sirve para tratar con magnitudes aleatorias o más exactamente para caracterizar una sucesión de variables aleatorias(estocásticas) que evolucionan en función de otra variable, generalmente el tiempo.
+
+\textit{Markov Models Representation}
+
+modelos de Markov representan una serie de tiempo de una manera estocástica. \textit{Hidden Markov models} (HMM) son modelos de Markov cuyos parámetros son desconocidos. Una descripción detallada de los HMM se puede encontrar en \citep{rabiner:1989:tutorial}. Un HMM de primer orden se describe completamente con los siguientes parámetros:
+
+\begin{itemize}
+  \item El número de estados.
+  
+  \item La distribución de probabilidad de transición de estado, es decir, la probabilidad de que el sistema va a ir de un estado a otro.
+  
+  \item La densidad de las observaciones.
+  
+  \item La distribución de probabilidad del estado inicial.
+\end{itemize}
+
+Para que un \textit{Hidden Markov models}  sea totalmente modelada probabilísticamente, tenemos que especificar los estados anteriores y actuales. 
+
+Un caso especial es una cadena de Markov, donde necesitamos saber sólo el estado actual y predecesor. El problema de la estimación de los parámetros de un HMM, dadas las observaciones, se puede ver como un problema de estimación de máxima verosimilitud. El problema, sin embargo, no tiene una solución global.
+
+algoritmos iterativos, tales como el algoritmo de Baum-Welch, sólo se garantizan la convergencia a un máximo local. Los parámetros que se estiman por este algoritmo son la probabilidad del estado inicial, los parámetros de transición de estado, la media y la covarianza de la gaussiana de cada estado.
+
+
+\subsubsection{Data dictated}
+En este enfoque la tasa de comprensión es definido automáticamente de una serie de tiempo sin procesar \citep{tsclus_:decade_:review} tal como Clipped propuesto en \citep{ratanamahatana:2005:novel}.
+
+\textit{The clipped representation}
+
+En \citep{ratanamahatana:2005:novel} presenta el método de representación que trabaja remplazando cada dato del valor real por un único bit. como se muestra en la siguiente (figura \ref{fig:clipped}) 
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.5]{imagenes/clipped.PNG}
+  \caption{Una serie de tiempo de longitud 64, denotado por $C$, se convierte en la representación $clipped$, denotado por $c$, simplemente observando los elementos de $C$, que los puntos encima de cero son 1 caso contrario son 0.}
+  \label{fig:clipped}
+\end{figure}
+
+Más formalmente, podemos definir $c$, la representación $clipped$ de $C$ como:
+\begin{equation}
+c(i) = \begin{cases}1 & if \; \; \; C(i) > \mu\\0 & otherwise\end{cases}
+\end{equation}
+
+Donde $\mu$ es el valor medio de $C$, y en el caso que la serie de tiempo este normalizada se puede asumir que $\mu$ = 0.
+
+%As you can see in the figure \ref{fig:mesh1}, the 
+%function grows near 0. Also, in the page \pageref{fig:mesh1} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[]
+  \centering
+  \caption{Métodos de representación}
+  \label{tab:metodosrep}
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}|l|l|l|l|l|@{}}
+      \toprule
+      \textbf{\begin{tabular}[c]{@{}l@{}}Métodos de\\ representación\end{tabular}}                   & \textbf{Complejidad} & \textbf{Tipo}                                                                    & \textbf{Comentario}                                                                                                                                                                                                             & \textbf{\begin{tabular}[c]{@{}l@{}}Presentado\\ Por\end{tabular}} \\ \midrule
+      \begin{tabular}[c]{@{}l@{}}Discrete Fourier \\ Transform (DFT)\end{tabular}                    & $O(n log(n))$        & \begin{tabular}[c]{@{}l@{}}Non data adaptive, \\ Spectral\end{tabular}           & \textbf{\begin{tabular}[c]{@{}l@{}}Uso: \\ Señales naturales\\ Pros:\\ Sin falsos despidos\\ Contra:\\ No soporta "time warped queries"\end{tabular}}                                                                           &                                                                   \\ \midrule
+      \begin{tabular}[c]{@{}l@{}}Discrete Wavelet \\ Transform (DWT)\end{tabular}                    & $O(n)$               & \begin{tabular}[c]{@{}l@{}}Non data adaptive, \\ Wavelet\end{tabular}            & \textbf{\begin{tabular}[c]{@{}l@{}}Uso:\\ Señales estacionarias\\ Pros:\\ Mejores resultados que DFT\\ Contra:\\ Resultados no estables, \\ las señales deben tener una\\  longitud $ n=2^{alg\acute{u}nEntero} $\end{tabular}} &                                                                   \\ \midrule
+      \begin{tabular}[c]{@{}l@{}}Singular Value \\ Decomposition (SVD)\end{tabular}                  & $O(Mn^{2})$          & Data adaptive                                                                    & \textbf{\begin{tabular}[c]{@{}l@{}}Pros:\\ Comunidad de procesamiento de texto\\ Contra:\\ Estructura de datos subyacente\end{tabular}}                                                                                         &                                                                   \\ \midrule
+      \begin{tabular}[c]{@{}l@{}}Discrete Cosine \\ Transformation (DCT)\end{tabular}                &                      & \begin{tabular}[c]{@{}l@{}}Non data adaptive, \\ Spectral\end{tabular}           & \textbf{}                                                                                                                                                                                                                       &                                                                   \\ \midrule
+      \begin{tabular}[c]{@{}l@{}}Piecewise Linear \\ Approximation (PLA)\end{tabular}                & $O(n\,log(n))$       & Data adaptive                                                                    & \textbf{\begin{tabular}[c]{@{}l@{}}Uso: \\ Señales naturales, biomedica\\ Contra:\\ No (actualmente) indexable, muy caro $O(n^2 N)$\end{tabular}}                                                                               &                                                                   \\ \midrule
+      \begin{tabular}[c]{@{}l@{}}Piecewise Aggregate \\ Approximation (PAA)\end{tabular}             & $O(n)$               & Non data adaptive                                                                & \textbf{\begin{tabular}[c]{@{}l@{}}Uso:\\ Pros:\\ Contra:\end{tabular}}                                                                                                                                                         &                                                                   \\ \midrule
+      \begin{tabular}[c]{@{}l@{}}Adaptive Piecewise \\ Constant Approximation \\ (APCA)\end{tabular} & $O(n)$               & Dada adaptive                                                                    & \textbf{\begin{tabular}[c]{@{}l@{}}Pros: \\ Muy eficiente\\ Contra:\\ compleja implementación\end{tabular}}                                                                                                                     &                                                                   \\ \midrule
+      \begin{tabular}[c]{@{}l@{}}Perceptually important \\ point (PIP)\end{tabular}                  &                      & Non data adaptive                                                                & \textbf{Uso: Finaciero}                                                                                                                                                                                                         &                                                                   \\ \midrule
+      \begin{tabular}[c]{@{}l@{}}Chebyshev Polynomials \\ (CHEB)\end{tabular}                        &                      & \begin{tabular}[c]{@{}l@{}}Non data adaptive,\\ Wavalet Orthonormal\end{tabular} & \textbf{}                                                                                                                                                                                                                       &                                                                   \\ \midrule
+      \begin{tabular}[c]{@{}l@{}}Symbolic Approximation\\ (SAX)\end{tabular}                         & $O(n)$               & Data adaptive                                                                    & \textbf{\begin{tabular}[c]{@{}l@{}}Uso:\\ Procesamiento de texto y bioinformatica\\ Pros:\\ Permite delimitación inferior y reducción \\ de numerosidad  \\ Contra:\\ Discretización y tamaño del alfabeto\end{tabular}}        &                                                                   \\ \midrule
+      Clipped Data                                                                                   &                      & Data dictated                                                                    & \textbf{\begin{tabular}[c]{@{}l@{}}Uso:\\ Hardware\\ Contra:\\ Representación ultra compacto\end{tabular}}                                                                                                                      &                                                                   \\ \midrule
+      \begin{tabular}[c]{@{}l@{}}Indexable Piecewise\\ Linear Approximation\\ (IPLA)\end{tabular}    &                      & Non data adaptive                                                                & \textbf{\begin{tabular}[c]{@{}l@{}}Uso:\\ Pros:\\ Contra:\end{tabular}}                                                                                                                                                         &                                                                   \\ \bottomrule
+    \end{tabular}
+    
+  }
+  
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection {Medidas de similitud}
+Las medidas de similitud son una tarea importante y además la base de donde surgen técnicas más sofisticadas como la minería y análisis de series de tiempo, a diferencia del clustering tradicional donde una distancia entre objetos estáticos es una comparación exacta, en clustering en series de tiempo la distancia es calculada de manera aproximada. 
+En el dominio de series de tiempo, la elaboración de una función de similitud apropiada no se hace de forma trivial. Hay esencialmente dos maneras en que los datos podrían ser organizados y procesados \citep{agrawal:1993:efficient}, en \textit{whole series matching} donde se considera la longitud completa de toda la serie de tiempo durante la búsqueda de similitud. Se requiere la comparación de la secuencia de consulta para cada serie candidata mediante la evaluación de una función de distancia y hacer el seguimiento de la secuencia con la distancia más pequeña \citep{fu:2011:review}. Esto problema de similitud puede ser resumido en dos formas \citep{mitsa:2010:temporal} de la siguiente manera:
+
+\begin{enumerate}
+  \item Encontrar todos los pares de series de tiempo que tienen una distancia que es menor que un número $ n $.
+  \item Indexación y búsqueda de contenidos. Hay dos enfoques para este tipo de búsqueda: (1) por rango: Encuentre todas las series temporales que tienen distancia inferior a un número $n$ a partir de una serie de tiempo específica. (2) Busca los $m$ vecinos más cercanos para una serie de tiempo específico.
+\end{enumerate}
+la otra manera es \textit{subsequence matching} donde una secuencia corta es comparada con una secuencia más larga, deslizando el anterior a lo largo de este ultimo. Una forma para calcular la distancia entre dos series de tiempo es considerándolos como series de tiempo univariadas, una serie de tiempo univariada es cuando solo tiene una dimensión que depende del tiempo, y luego calculando la medida de distancia a través de todos los puntos.
+
+La elección de una medida de distancia depende netamente de las características de la serie de tiempo como son: la longitud, el método de representación y el objetivo del clustering \citep{tsclus_:decade_:review}, las medidas de distancia o similitud pueden ser divididas en cuatro categorías \citep{esling:2012:time} que son las siguientes: 
+
+
+\subsubsection{Shape-based:} 
+compara en general la forma de las series de tiempo, los métodos basados en esta categoría son:
+
+\textit{Dynamic Time Warping (DTW)}
+
+Cuando se hace desea hacer una medida de similitud generalmente se asume que las dos series de tiempo que se quiere evaluar están alineadas en el eje-X, para solucionar este problema esta el algoritmos Dynamic Time Warping que consiste algoritmicamente como se explica en \citep{keogh:2001:derivative}: \\
+Tenemos dos series de tiempo $Q$ Y $C$ de longitud $n$ y $m$ respectivamente donde: 
+
+\begin{equation}
+Q = q_1,q_2,...,q_i,...q_n
+\end{equation}
+
+\begin{equation}
+Q = c_1,c_2,...,c_j,...c_m
+\end{equation}
+
+para alinear estas dos secuencias usando DTW se construye un matriz $n$ por $m$ donde el elemento $(i^{th},j^{th})$ de la matriz contiene las distancias $d(q_i,c_j)$ entre los dos puntos $q_i$ y $c_i$ (comúnmente se usa la distancia euclidiana así que $d(q_i,c_j) = (q_i,c_j)^2$). cada elemento de la matriz $(i,j)$ corresponde a la alineación entre los puntos $q_i$ y $c_j$. Esto se ilustra en la (figura \ref{fig:dtw}). Un  Warping path $W$ es un conjunto de elementos de la matriz que define un mapeo entre $Q$ Y $C$. El elemento $k^{th}$ de $W$ es definido como $w_k=(i,j)_k$ así que tenemos:
+
+\begin{equation}
+W = w_1,w_2,...,w_k,...,w_k  \; \;   max(m,n) \leq  k < m+n+1
+\end{equation}
+
+El path warping esta sujeto a varias restricciones como son, condiciones de limites, continuidad, nonotonicidad, que están hechas para optimizar el rendimiento de su calculo.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.5]{imagenes/dtw.PNG}
+  \caption{Ejemplo de \textit{warping path}}
+  \label{fig:dtw}
+\end{figure}
+
+\textit{Spatial Assembling (SpADe)}
+
+En este algoritmo, la similaridad es calculado por búsqueda de patrones coincidentes entre dos series de tiempo, El algoritmo \citep{chen:2007:spade} describe que teniendo dos secuencias $Q[0:m]$ y $D[0:n]$ de las cuales se extrae un conjunto de pequeños patrones de la serie de tiempo usando una ventaja deslizante de tamaño fijo. Esos pequeños patrones de una misma longitud son llamados patrones locales. Al utilizar el tamaño fijo de ventana deslizante en dos secuencias de tiempo, se obtienen dos conjuntos de patrones locales. \\
+
+Un patrón local $lp = (\theta_{pos}, \theta_{amp}, \theta_{shp}, \theta_{tscl}, \theta_{ascl})$, que son las que son la posición de $lp$ en $Q$ que significan:
+
+\begin{itemize}
+  \item $\theta_{pos}$: Es la posición de $lp$ en $Q$.
+  \item $\theta_{amp}$: Es la amplitud media de los datos item en $lp$.
+  \item $\theta_{shp}$: La forma que caracteriza de $lp$.
+  \item $\theta_{tscl}$: La escala temporal de $lp$ (igual a 1 si $Q$ no esta escalado).
+  \item $\theta_{ascl}$: La escala de amplitud de $lp$ (igual a 1 si $Q$ no esta escalado).
+\end{itemize}
+
+La distancia de los dos patrones locales $lp$ en $Q$ y $lp'$ en $D$, pueden ser medidos como:
+
+\begin{equation}
+D_1(lp', lp) = f(\mid \theta^{\:'}_{amp} - \theta^{\:'}_{amp} \mid, \mid \theta^{\:'}_{shp} - \theta^{\:'}_{shp} \mid)
+\end{equation}
+
+Que es una suma ponderada de las diferencias de las amplitudes y características de forma de los dos patrones locales, finalmente se procede a comparar estos patrones para hallar el grado de similitud.
+
+\textit{DISSIM Distance}
+
+Ha sido introducido para manejar la similitud de varias tasas de sampling. Esto es definido como una aproximación de la integral de la distancia euclidiana que también se puede definir \citep{frentzos:2007:index} como:
+La disimilaridad $DISSIM(Q,T)$ entre dos trayectorias $Q$ y $T$ que ha sido validado durante un periodo $[t_1, t_n]$ se expresa mediante la siguiente ecuación:
+\begin{equation}
+DISSIM(Q,T) \approx \frac{1}{2}
+\sum_{k=1}^{n-1}((D_{Q,T}(t_{k}) + D_{Q,T}(t_{k+1})) \cdot (t_{k+1} - t_k))
+\end{equation}
+
+Donde $D_{Q,T}(t)$ es una función de la distancia euclidiana entre las trayectorias $Q$ Y $T$ con el tiempo.
+
+\subsubsection{Edit-based:} 
+compara dos series de tiempo en base al mínimo número de operaciones necesarias para transformar una serie a la otra.
+
+\textit{Edit Distance with Real Penalty (ERP)} 
+
+La distancia ERP es una medida de distancia elástica para $matching$ en series de tiempo \citep{chen:2004:marriage}. Durante el calculo de la distancia ERP de dos series de tiempo $R$ y $S$ con longitudes $M$ y $N$, están alineados a la misma longitud mediante la adición de algunos símbolos (también llamados $gaps$) a ellos. A continuación, cada elemento en una serie de tiempo o bien se corresponde con un $gap$ o un elemento en la otra serie de tiempo. finalmente la distancia ERP se define \citep{chen:2005:similarity}, dado dos series de tiempo $R$ y $S$ de longitud $M$ y $N$, respectivamente la distancia ERP de $R$ a $S$, $ERP(R,S)$, se define como:
+
+\begin{equation}
+ERP(R,S) = \begin{cases}
+\sum_{i=1}^{M}|r_i-g| & if \;\;\; N= 0, \\
+\sum_{i=1}^{N}|s_i-g| & if \;\;\; M = 0, \\
+min
+\begin{cases}
+ERP(Rest(R),Rest(S)) + dist_{erp}(r_1, s_1),\\
+ERP(Rest(R),S) + dist_{erp}(r_1, g),\\
+ERP(R,Rest(S)) + dist_{erp}(s_1, g)
+\end{cases} 
+& otherwise
+\end{cases}
+\end{equation}
+
+Donde:
+\begin{equation}
+dist_{erp}(r_i,s_i) = \begin{cases}
+|r_i - s_i| & if \;\;\; r_i, s_i \; not \; gaps\\
+|r_i - s_g| & if \;\;\; s_i \; is \;a\; gaps\\
+|s_i - s_g| & if \;\;\; r_i \; is \;a\; gaps
+\end{cases}
+\end{equation}
+
+y $g$ denota los $gap$ que se asigna un valor constante. 
+
+\textit{The Longest Common Subsequence (LCSS)}
+
+LCSS es una medida que es tolerante a la ausencia de puntos en la serie de tiempo(gaps) en las dos series que se quiere comparar, este algoritmo asume la misma base y escala para las dos series de tiempo y es superior a DTW en las siguientes aspectos \citep{vlachos:2003:indexing}:
+
+\begin{itemize}
+  \item LCSS maneja mejor el ruido y los $outliers$.
+  \item El DTW puede distorsionar la distancia actual entre puntos en la serie de tiempo por $overfitting$.
+  \item La complejidad computacional de DTW es significativa y además su escalabilidad no es muy buena.
+\end{itemize}
+
+Una definición formal de LCSS la encontramos en \citep{loncomsub} y explica que teniendo dos secuencias de caracteres $X = {x_1,x_2,...,x_m}$ y $Z={z_1,z_2,...,z_k}$ decimos que $Z$ es una subsecuencia de $X$ si existe una secuencia estrictamente incremental de $k$ índices ${i_1,i_2,...,i_k}$ tal que $Z={X_{i1},X_{i2},...,X_{ik}}$, por ejemplo, tenemos $X={ABRACADABRA}$  y $Z={AADAA}$, luego $Z$ es una subsecuencia de $X$. \\
+
+\subsubsection{Feature-based:} 
+Se extraen las características describiendo aspectos de la serie que son luego comparadas con algún tipo de función de distancia, entre los cuales tenemos los siguientes métodos:
+
+\textit{Autocorrelation Function}
+
+Como se explica en \citep{correlationfun}, la función de autocorrelación(ACF) es una muy importante conjunto de características para el análisis de series de tiempo. Teniendo un conjunto de series de tiempo $X=[x_1,x_2,...,x_N]$ de longitud $N$ definimos un conjunto de características $Z$ de $M$-dimensiones como también un conjunto arbitrario de retardos (\textit{lags}) $k_1,k_2,...,k_M$. Tenemos $Z=[r_{k_1},r_{k_2},...,r_{k_M}]$, donde: 
+
+
+
+\begin{equation}
+r_k = \frac{1}{N} \sum_{i=1}^{N} x_ix_{[i+k]_N} 
+\end{equation}
+
+Donde los corchetes $[i-k]_N$ indican el modulo-$N$. Estos son conocidos como estimaciones ACF circular debido a la indexación de módulo-$N$. Se elige esta forma de ACF porque simplifica el análisis. Finalmente se tiene el calculo de características como:
+
+\begin{equation}
+  Feature \; Calculation: \; Z = [r_{k_1},r_{k_2},...,r_{k_M}], \; Donde \; r_k = \frac{1}{N} \sum_{i=1}^{N} x_ix_{[i+k]_N} 
+\end{equation}
+
+Notar que es posible reescribir el calculo de las características como:
+
+\begin{equation}
+r_k = \frac{1}{N^2} \sum_{i=0}^{N/2} \epsilon_i y_i \cos\left\{ \frac{2\pi ik}{N}\right\}, \;\; k=0,1,...P,
+\end{equation}
+Donde $y={y_0,y_1,...,y_{N/2}}$ son los coeficientes DFT de magnitud al cuadrado, $\epsilon_i = 1$ para $i=0,N/2$, y $\epsilon_i = 2$ para $i=1, 2,...,N/2-1$.
+
+
+\textit{Histogram distance}
+
+Dado un conjunto de series de tiempo $D = {R_1,R_2,...,R_L}$, donde cada elemento $R$ esta representado por $R = [(r_1, t_1), . . . ,(r_N , t_N)]$ donde $N$ es el numero de puntos en $R_i$ y cada par de datos $(r, t)$ sígnica tanto $r$ el valor en la marca de tiempo $t$. Para obtener el histograma del conjunto de datos $D$ se normaliza cada $R_i$ según la formula mostrada en \citep{chen:2005:using}, luego los Histogramas son obtenidos dando un máximo $(max_D)$ y un mínimo $(min_D)$, el rango $[nim_D, max_D]$ es dividido en $\tau$ subregiones de igual tamaño disjuntos, llamados $histogram bins$. Dado una serie de tiempo $R$, su histograma $H_R$ puede ser calculado por conteo de número de puntos $h_i(1 \leq i \leq \tau$ que son ubicaciones en cada \textit{histogram \; bin} $ i: \; H_R = [h_1,...,h_{\tau}]$). Finalmente L1-norm o L2-norm \citep{swain:1991:color} pueden ser usados para medir la distancia entre dos histogramas.
+
+\subsubsection{Structure-based:} 
+Dividimos esta categoría en dos subcategorías específicas. \textit{Model-based distances} que trabaja mediante el ajuste de un modelo para las diferentes series y, luego comparando los parámetros de los modelos subyacentes. \textit{Compression-based distances}. analizar qué tan bien dos series se puede comprimir juntos. Similitud es reflejada por relaciones de compresión más altas.
+
+
+\textit{Compression-based dissimilarity (CDM)}
+
+Dado dos cadena de características, $x$ y $y$, definimos el $CDM$ como \citep{keogh:2007:compression}:
+\begin{equation}
+CDM(x,y) = \frac{C(xy)}{C(x) + C(y)}
+\end{equation}
+La disimilitud CDM se aproxima a 1 cuando $x$ e $y$ no están relacionados, y es más pequeño que 1 si $x$ e $y$ están relacionados. Cuanto menor sea el CDM $x$ e $y$ son más estrechamente relacionados aunque nunca será cero. El algoritmo comprime tanto la cadena $x$ como la cadena $y$, luego concatena las cadenas originales obteniendo $xy$ procediendo a comprimir, para aplicar finalmente la formula antes mencionada.
+
+%****************************************
+\begin{table}[]
+  \centering
+  \caption{Medidas de distancia}
+  \label{tab:meddis}
+  \begin{tabular}{llllllll}
+    \hline
+    \multicolumn{1}{|l|}{\textbf{Medida de distancia}}    & \multicolumn{1}{l|}{\textbf{E}} & \multicolumn{1}{l|}{\textbf{D}} & \multicolumn{1}{l|}{\textbf{R}} & \multicolumn{1}{l|}{\textbf{O}} & \multicolumn{1}{l|}{\textbf{M}} & \multicolumn{1}{l|}{\textbf{C}}   & \multicolumn{1}{l|}{\textbf{P}} \\ \hline
+    \multicolumn{1}{|l|}{\textbf{Shape-based}}            & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\textbf{}}  & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}             & \multicolumn{1}{l|}{}           \\ \hline
+    \multicolumn{1}{|l|}{Dynamic Time Warping (DTW)}      & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\textbf{}}  & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{$O(n^2)$}     & \multicolumn{1}{l|}{1}          \\ \hline
+    \multicolumn{1}{|l|}{Spatial Assembling (SpADe)}      & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{$O(n^2)$}     & \multicolumn{1}{l|}{4}          \\ \hline
+    \multicolumn{1}{|l|}{DISSIM}                          & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{$O(n^2)$}     & \multicolumn{1}{l|}{0}          \\ \hline
+    \multicolumn{1}{|l|}{\textbf{Edit-based}}             & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\textbf{}}  & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}             & \multicolumn{1}{l|}{}           \\ \hline
+    \multicolumn{1}{|l|}{Edit with Real Penalty (ERP)}    & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{$O(n^2)$}     & \multicolumn{1}{l|}{2}          \\ \hline
+    \multicolumn{1}{|l|}{Longest Common SubSeq (LCSS)}    & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{$O(n)$}       & \multicolumn{1}{l|}{2}          \\ \hline
+    \multicolumn{1}{|l|}{Sequence Weighted Align (Swale)} & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{$O(n)$}       & \multicolumn{1}{l|}{3}          \\ \hline
+    \multicolumn{1}{|l|}{Edit Distance on Real (EDR)}     & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{$O(n^2)$}     & \multicolumn{1}{l|}{2}          \\ \hline
+    \multicolumn{1}{|l|}{\textbf{Feature-based}}          & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\textbf{}}  & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}             & \multicolumn{1}{l|}{}           \\ \hline
+    \multicolumn{1}{|l|}{Autocorrelation}                 & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{$O(nlogn)$}   & \multicolumn{1}{l|}{0}          \\ \hline
+    \multicolumn{1}{|l|}{Threshold Queries (TQuest)}      & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{$O(n^2logn)$} & \multicolumn{1}{l|}{1}          \\ \hline
+    \multicolumn{1}{|l|}{Histogram}                       & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{$O(n)$}       & \multicolumn{1}{l|}{0}          \\ \hline
+    \multicolumn{1}{|l|}{\textbf{Structure-based}}        & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}             & \multicolumn{1}{l|}{}           \\ \hline
+    \multicolumn{1}{|l|}{\textit{Model-based}}            & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}             & \multicolumn{1}{l|}{}           \\ \hline
+    \multicolumn{1}{|l|}{Hidden Markov Models (HMM)}      & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{$O(n^2)$}     & \multicolumn{1}{l|}{1}          \\ \hline
+    \multicolumn{1}{|l|}{Auto-Regressive (ARMA)}          & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{$O(n^2)$}     & \multicolumn{1}{l|}{2}          \\ \hline
+    \multicolumn{1}{|l|}{\textit{Compression-based}}      & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{}             & \multicolumn{1}{l|}{}           \\ \hline
+    \multicolumn{1}{|l|}{Compression Dissimilarity (CDM)} & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{\checkmark} & \multicolumn{1}{l|}{}           & \multicolumn{1}{l|}{$O(n)$}       & \multicolumn{1}{l|}{0}          \\ \hline
+    &                                 &                                 &                                 &                                 &                                 &                                   &                                 \\
+    &                                 &                                 &                                 &                                 &                                 &                                   &                                 \\
+    &                                 &                                 &                                 &                                 &                                 &                                   &                                
+  \end{tabular}
+\end{table}
+%***************************************
+
+
+
+ \subsection{Clustering en Series de tiempo}
+ Un cluster es un conjunto similar de objetos, donde la similaridad esta definida por una medida de distancia. El clustering representa un reto por los siguientes motivos \citep{mitsa:2010:temporal}:
+ 
+ \begin{enumerate}
+  \item Los valores de los atributos o características que diferencian un cluster de otro nos desconocidas.
+  \item A diferencia de la clasificación, no hay datos etiquetados. solo se puede tener un conocimiento a priori de un experto, esto lleva a su nombre de aprendizaje no supervizado en el campo de \textit{machine learning}.
+  \item Debido a que no existe una guía en cuanto a lo que constituye un clúster, el éxito de los algoritmos de agrupamiento se ve influenciada por la presencia de ruido en los datos, los datos que faltan, y los valores atípicos. 
+ \end{enumerate}
+ 
+ Al igual que el clustering de datos estáticos, clustering en series de tiempo requiere de algoritmos o procedimiento para formar clusters dado un conjunto de objetos de datos sin etiqueta, de tal forma la elección del algoritmo de cluster depende tanto del tipo de datos disponibles y de la finalidad y aplicación en particular \citep{liao:2005:clustering}. Para hacer énfasis en la importancia y la necesidad de agrupar los conjuntos de datos de series de tiempo, pueden darse los siguientes objetivos para el agrupamiento de los datos de series de tiempo de la siguiente manera \citep{aghabozorgi:2015:time}:
+ 
+ \begin{enumerate}
+  \item Bases de datos de series temporales contienen información valiosa que se puede obtener a través del descubrimiento de patrones. El clustering es una solución común que se realiza para descubrir estos patrones en conjuntos de datos de series de tiempo.
+  
+  \item Clustering de series de tiempo es el método más utilizado como una técnica de exploración, y también como una subrutina en algoritmos de minería de datos más complejos, tales como el descubrimiento de reglas, indexación, clasificación y detección de anomalías \citep{chics:2009:clustering}.
+  
+  \item Representar las estructuras de clusters de series temporales como imágenes visuales (visualización de los datos de series de tiempo) puede ayudar a los usuarios a entender rápidamente la estructura de datos, clusters, anomalías y otras regularidades en los conjuntos de datos.
+ \end{enumerate}
+ 
+ El clustering en series de tiempo se define formalmente como:
+ 
+ \begin{defi}
+  (Clustering en Series de tiempo) dado un conjunto de datos de $n$ series de tiempo, datos $D = {F_1,F_2,...,F_n}$, el proceso de particionamiento sin supervisar de $D$ dentro de $C={C_1,C_2,...,C_k}$, de tal forma que series de tiempo homogéneas son agrupadas juntas basados en una medida de similitud, es llamado clustering de series de tiempo, luego $C_i$ es llamado un cluster, DONDE $D = \cup_{i=0}^k C_i$ y $C_i \cup C_j=\o$ para $i \neq j$.
+ \end{defi}
+ 
+ \subsubsection{Taxonomía de clustering de series de tiempo}
+ 
+ Existen dos categorías en las cuales se clasifican la clusterización de series temporales \citep{esling:2012:time}, $whole series clustering$ y $subsequence clustering$
+ 
+ \begin{itemize}
+  \item \textit{Whole Series Clustering} 
+  El clustering puede ser aplicar a cada serie de tiempo de un conjunto completo. El objetivo es reagrupar toda serie de tiempo en grupos de manera que las series de tiempo sean similares entre sí como sea posible dentro de cada grupo.
+  \begin{defi}
+    Dado una base de datos de series de tiempo $DB$ y una medida de similitud $D(Q,T)$, buscamos un conjunto de clusters $C={c_i}$ donde $c_i = {T_k | T_k \in DB}$ que maximiza la distancia entre clusters y miniminiza la variación intracluster.
+  \end{defi}
+  
+  \item \textit{Subsequence Clustering}
+  Los clusters son creados por extracción de subsecuencias de una única o múltiples grandes series de tiempo.
+  \begin{defi}
+    Dado una serie de tiempo $T=(t_1,...,t_n)$ y una medida de similitud $D(Q,C)$, buscamos un conjunto de clusters $C={c_i}$ donde 
+    $c_i = {T_j | T_j \in S_t^n}$ es un conjunto de subsecuencias que maximiza la distancia entre clusters y miniminiza la variación intracluster.
+  \end{defi}
+  
+ \end{itemize}
+ 
+ Una revisión completa de toda la agrupación de series de tiempo se lleva a cabo y se muestra en la Tabla 4. La revisión de la literatura, se observa que varias técnicas han sido recomendados para la agrupación de los datos de series temporales enteros. Sin embargo, la mayoría de ellos toman uno de los siguientes enfoques para agrupar los datos de series de tiempo:
+ 
+ Como se vio antes hay dos formas de Clusterizar las series de tiempo, en $Whole series clustering$, en este forma de agrupamiento se muestran algunos enfoques \citep{tsclus_:decade_:review} que se toman para su procesamiento como se muestra en la (Imagen \ref{fig:enf}) 
+ 
+ \begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.5]{imagenes/enfoques.PNG}
+  \caption{Enfoques de clustering de series de tiempo}
+  \label{fig:enf}
+ \end{figure}
+ 
+ \subsubsection{Clasificación de los algoritmos de series de tiempo}
+ 
+ El clustering de series de tiempo puede ser clasificado dentro de seis grupos: Particionamiento, Jerarquico, basados en grid, basados en modelo, basados en densidad y multi-step \citep{tsclus_:decade_:review}, \citep{rani:2012:recent}, \citep{liao:2005:clustering}.
+ 
+ \textit{Clustering basados en particionamiento}
+ 
+ La idea principal en esta clase de algoritmos de agrupamiento es crear $k$ cluster de los datos, donde el número K es introducido por el usuario. Estos algoritmos son adecuados principalmente para datos numéricos. La agrupación original, también conocida como la partición, se lleva a cabo al azar y luego los objetos se mueven dentro y fuera de las agrupaciones, utilizando como guía un criterio de  "cercanía". Los algoritmos de particionamiento son muy populares debido a su facilidad de implementación y bajo costo computacional. Sin embargo, tienen estas desventajas: (1) que son sensibles a la presencia de ruido y los valores atípicos, (2) se pueden descubrir sólo los clústeres con formas convexas, y (3) el número de grupos debe ser especificado \citep{esling:2012:time}. En el (cuadro \ref{tab:clus_particion}) presentamos los métodos de particionamiento principales que hay en la literatura.
+ 
+ % Please add the following required packages to your document preamble:
+ % \usepackage{graphicx}
+ % Please add the following required packages to your document preamble:
+ % \usepackage{graphicx}
+ \begin{table}[]
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|l|l|l|l|}
+      \hline
+      \textbf{Algoritmo de clustering}                                             & \textbf{\begin{tabular}[c]{@{}l@{}}Método de \\ representación\end{tabular}}                  & \textbf{\begin{tabular}[c]{@{}l@{}}Medida de \\ distancia\end{tabular}}              & \textbf{\begin{tabular}[c]{@{}l@{}}Comentario \\ (P:positivo, N: negativo)\end{tabular}} & \textbf{Applicación}                                                                  \\ \hline
+      k-means                                                                      & \begin{tabular}[c]{@{}l@{}}DWT\\  (Discrete Wavelet Transform) \\   Haar wavelet\end{tabular} & Euclidean                                                                            & \begin{tabular}[c]{@{}l@{}}P: Incremental \\ N: Sensitive to noise\end{tabular}          & *                                                                                     \\ \hline
+      k-means                                                                      & \begin{tabular}[c]{@{}l@{}}BLA \\ (clipped timeseries representation)\end{tabular}            & LB\_clipped                                                                          & N: Sensitive to noise                                                                    & *                                                                                     \\ \hline
+      k-Means                                                                      & DSA                                                                                           & DTW                                                                                  & N/A                                                                                      & *                                                                                     \\ \hline
+      k-Means                                                                      & Shapelets                                                                                     & \begin{tabular}[c]{@{}l@{}}length-normalized \\ Euclidean distance\end{tabular}      & \begin{tabular}[c]{@{}l@{}}P: Cluster time-series \\ of different lengths\end{tabular}   & *                                                                                     \\ \hline
+      K-Means                                                                      & *                                                                                             & \begin{tabular}[c]{@{}l@{}}CVT\\ (Computational Verb Theory)\end{tabular}            & *                                                                                        & Stock market data                                                                     \\ \hline
+      K-Means                                                                      & *                                                                                             & Euclidean                                                                            & *                                                                                        & Portfolio management                                                                  \\ \hline
+      K-Means                                                                      & *                                                                                             & N/A                                                                                  & *                                                                                        & Stock data                                                                            \\ \hline
+      k-means                                                                      & Wavelet transform                                                                             & Kullback- Liebler divergence                                                         & *                                                                                        & \begin{tabular}[c]{@{}l@{}}Detection of activated \\ voxels in FMRI data\end{tabular} \\ \hline
+      \begin{tabular}[c]{@{}l@{}}FCM \\ (Fuzzy c-Means Clustering)\end{tabular}    & Raw time-series                                                                               & \begin{tabular}[c]{@{}l@{}}Euclidean and \\ two cross correlation-based\end{tabular} & P: Noise Robustness                                                                      & *                                                                                     \\ \hline
+      \begin{tabular}[c]{@{}l@{}}FCM\\ (Fuzzy c-Means Clustering)\end{tabular}     & (Fuzzy                                                                                        & c-Means                                                                              & Clustering)                                                                              & *                                                                                     \\ \hline
+      \begin{tabular}[c]{@{}l@{}}FCM\\ (Fuzzy c-Means Clustering)\end{tabular}     & Raw time-series                                                                               & Euclidean Distance (ED)                                                              & P: Dynamic nature of algorithm                                                           & *                                                                                     \\ \hline
+      \begin{tabular}[c]{@{}l@{}}FCM \\ (Fuzzy c-Means Clustering)\end{tabular}    & N/A                                                                                           & \begin{tabular}[c]{@{}l@{}}Euclidean and \\ two cross-correlation based\end{tabular} & *                                                                                        & \begin{tabular}[c]{@{}l@{}}Functional MRI brain \\ activity mapping\end{tabular}      \\ \hline
+      \begin{tabular}[c]{@{}l@{}}PAM \\ (Partitioning Around Medoids)\end{tabular} & \begin{tabular}[c]{@{}l@{}}HMMs \\ (Hidden Markov Models)\end{tabular}                        & KL-Distance                                                                          & \begin{tabular}[c]{@{}l@{}}P: Support categorical \\ and continues values\end{tabular}   & *                                                                                     \\ \hline
+      \begin{tabular}[c]{@{}l@{}}PAM \\ (Partitioning Around Medoids)\end{tabular} & AR                                                                                            & Euclidean                                                                            & *                                                                                        & Public data                                                                           \\ \hline
+    \end{tabular}%
+  }
+  \caption{Métodos de clustering por particionamiento}
+  \label{tab:clus_particion}
+ \end{table}
+ 
+ 
+ \textit{Clustering basados en Jerarquía}
+ 
+ Como su nombre lo indica, en esta clase de algoritmos los objetos se colocan en una jerarquía ya sea en una de abajo hacia arriba (bottom-up) o de arriba hacia abajo (top-down) para crear los grupos. 
+ La ventaja de este tipo de agrupamiento es que no requiere ningún conocimiento sobre el número de grupos, y su desventaja es su complejidad computacional \citep{lin:2004:visually}. Muy a menudo una estructura en forma de árbol, un dendrograma, se utiliza para representados los niveles jerárquicos anidados. 
+ La mayoría de los algoritmos jerárquicos aglomerativas siguen un enfoque de abajo hacia arriba y comienzan con la formación de cada objeto de su propia categoría, en el (cuadro \ref{tab:clus_jerar}) mostramos los principales métodos. 
+ 
+ A continuación, fusionamos estas agrupaciones en grupos cada vez más grandes hasta que se cumpla un criterio especificado de antemano, tales como el número de grupos que se formen. Hay tres variaciones diferentes del algoritmo, en función de cómo se combinan grupos:
+ 
+ Single link:  En este enfoque, dos grupos se fusionaron si la distancia mínima entre dos objetos, uno de cada grupo, es menor o igual a una distancia de umbral predefinido.
+ 
+ Average link: Aquí, dos grupos se fusionan si la distancia media entre objetos en los dos grupos es menor que un umbral especificado previamente.
+ 
+ Complete link: En este enfoque, dos grupos se fusionan si la distancia máxima entre los puntos en los dos grupos es menor que o igual a un umbral especificado previamente. 
+ 
+ % Please add the following required packages to your document preamble:
+ % \usepackage{graphicx}
+ \begin{table}[]
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|l|l|l|l|}
+      \hline
+      \textbf{Algoritmo de clustering}                                       & \textbf{\begin{tabular}[c]{@{}l@{}}Método de \\ representación\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Medida de \\ distancia\end{tabular}}                              & \textbf{\begin{tabular}[c]{@{}l@{}}Comentario \\ (P:positivo, N: negativo)\end{tabular}} & \textbf{Application}                                                         \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Agglomerative\\   hierarchical\end{tabular} & Raw time-series                                                              & J divergence                                                                                         & \begin{tabular}[c]{@{}l@{}}P: Multiple variable \\ support\end{tabular}                  & \begin{tabular}[c]{@{}l@{}}Earthquakes and \\ mining explosions\end{tabular} \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Agglomerative\\   hierarchical\end{tabular} & Raw time-series                                                              & Root mean square                                                                                     & \begin{tabular}[c]{@{}l@{}}N: Single variable, \\ using raw time-series\end{tabular}     & \begin{tabular}[c]{@{}l@{}}Daily power \\ consumption\end{tabular}           \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Agglomerative\\   hierarchical\end{tabular} & Raw time-series                                                              & \begin{tabular}[c]{@{}l@{}}Gaussian models \\ of data errors\end{tabular}                            & -                                                                                        & \begin{tabular}[c]{@{}l@{}}Seasonality pattern \\ in retails\end{tabular}    \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Agglomerative\\   hierarchical\end{tabular} & Raw time-series                                                              & \begin{tabular}[c]{@{}l@{}}Kullbackâ??Leibler \\ discrimination information \\ Measures\end{tabular} & \begin{tabular}[c]{@{}l@{}}P: Multiple \\ variable support\end{tabular}                  & \begin{tabular}[c]{@{}l@{}}Earthquakes and \\ mining explosions\end{tabular} \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Agglomerative\\   hierarchical\end{tabular} & *                                                                            & Euclidean                                                                                            & *                                                                                        & \begin{tabular}[c]{@{}l@{}}Flow velocity in \\ a wind tunnel\end{tabular}    \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Agglomerative\\   hierarchical\end{tabular} & \begin{tabular}[c]{@{}l@{}}Hierarchical \\ smoothing models\end{tabular}     & \begin{tabular}[c]{@{}l@{}}Unknown \\ (most likely Euclidean)\end{tabular}                           & *                                                                                        & Music performance                                                            \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Agglomerative\\   hierarchical\end{tabular} & AR(â??)                                                                      & Euclidean                                                                                            & *                                                                                        & \begin{tabular}[c]{@{}l@{}}Industrial \\ production indices\end{tabular}     \\ \hline
+      Hierarchical                                                           & SAX                                                                          & \begin{tabular}[c]{@{}l@{}}Compression-based \\ distance\end{tabular}                                & N: Sensitive to noise                                                                    & *                                                                            \\ \hline
+      Hierarchical                                                           & PCA                                                                          & SpCA Factor                                                                                          & \begin{tabular}[c]{@{}l@{}}P: Anomaly detection \\ N: Sensitive to noise\end{tabular}    & *                                                                            \\ \hline
+      Hierarchical                                                           & Raw time-series                                                              & triangle distance                                                                                    & ?                                                                                        & *                                                                            \\ \hline
+      Single-linkage                                                         & Raw time-series                                                              & Ad hoc distance                                                                                      & \begin{tabular}[c]{@{}l@{}}N: using raw time-series \\ Sensitive to noise\end{tabular}   & *                                                                            \\ \hline
+    \end{tabular}%
+  }
+  \caption{Métodos de clustering Jerárquicos}
+  \label{tab:clus_jerar}
+ \end{table}
+ 
+ \textit{Clustering basados en densidad}
+ 
+ En esta clase de algoritmos, la idea principal es mantener creciendo los cluster, siempre y cuando su densidad es superior a un cierto umbral.  La ventaja de los algoritmos basados en la densidad, en comparación con los algoritmos de partición que se basan distancia, es que pueden detectar grupos de forma arbitraria, en la (tabla \ref{tab:clus_densidad}) se muestran algunos métodos de clustering basados en densidad.
+ 
+ 
+ % Please add the following required packages to your document preamble:
+ % \usepackage{graphicx}
+ \begin{table}[]
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|l|l|}
+      \hline
+      \textbf{Algorithm}                                                               & \textbf{Distance Measure} & \textbf{Application}                \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Density Based Subsequence\\   Clustering\end{tabular} & Dynamic Time Warping      & Detecting climate change            \\ \hline
+      Kernal DBScan                                                                    & Euclidean                 & Multivariate time series clustering \\ \hline
+    \end{tabular}%
+  }
+  \caption{Métodos de clustering basados en densidad}
+  \label{tab:clus_densidad}
+ \end{table}
+ 
+ \textit{Clustering basados en Modelos}
+ 
+ Clustering basados en modelos intenta recuperar el modelo original a partir de un conjunto de datos. Este enfoque supone un modelo para cada grupo, y encuentra el mejor ajuste de los datos a ese modelo. En detalle, se da por supuesto que hay algunas centroides elegidos al azar, y luego se añade un poco de ruido a ellos con una distribución normal. El modelo que se recupera de los datos generados define grupos \citep{Shavlik:1991}. Por lo general, los métodos basados en modelos utilizan métodos estadísticos como lo muestra el (cuadro \ref{tab:clus_model}).
+ 
+ % Please add the following required packages to your document preamble:
+ % \usepackage{graphicx}
+ \begin{table}[]
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|l|l|l|}
+      \hline
+      \textbf{Clustering Algorithm}                                                                                                                          & \textbf{\begin{tabular}[c]{@{}l@{}}Representation \\ method\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Distance \\ Measure\end{tabular}}                                                    & \textbf{Application}                                                             \\ \hline
+      Modified SOM                                                                                                                                           & \begin{tabular}[c]{@{}l@{}}Perceptually\\ important points\end{tabular}   & \begin{tabular}[c]{@{}l@{}}Sum of the mean squared \\ distance along thebvertical and \\ horizontal scales\end{tabular} & \begin{tabular}[c]{@{}l@{}}Hong Kong \\ stock market\end{tabular}                \\ \hline
+      EM learning                                                                                                                                            & Gaussian mixture                                                          & Log-likelihood                                                                                                          & Non-specific                                                                     \\ \hline
+      EM learning                                                                                                                                            & Discrete HMM                                                              & Log-likelihood                                                                                                          & \begin{tabular}[c]{@{}l@{}}Tool \\ conditionmonitoring\end{tabular}              \\ \hline
+      EM learning                                                                                                                                            & ARMA mixture                                                              & Log-likehood                                                                                                            & Public data                                                                      \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Forward propagation\\   learning algorithm\end{tabular}                                                                     & Empirical mode decomposition                                              & Euclidean                                                                                                               & Non-specific                                                                     \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Neural network clustering\\   performed by a batch EM \\ version of minimal free energy \\ vector quantization\end{tabular} & *                                                                         & N/A                                                                                                                     & \begin{tabular}[c]{@{}l@{}}Functional MRI \\ brain activity mapping\end{tabular} \\ \hline
+    \end{tabular}%
+  }
+  \caption{Métodos de clustering basados en modelos}
+  \label{tab:clus_model}
+ \end{table}
+ 
+ 
+ \textit{Clustering basados en Grid}
+ 
+ Los métodos basados en cuadricula $(grid)$ cuantifican el espacio en un número finito de celdas que forman una cuadricula, y luego realizar la agrupación en las celdas de la cuadrícula, no se han encontrado muchos trabajos aplicados en series de tiempo, los existentes son mostrados en la (tabla \ref{tab:clus_grid}).
+ 
+ % Please add the following required packages to your document preamble:
+ % \usepackage{graphicx}
+ \begin{table}[]
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|l|l|l|l|}
+      \hline
+      \textbf{Paper} & \textbf{Features} & \textbf{Distance Measure} & \textbf{Clustering Algorithm}  & \textbf{Application}  \\ \hline
+      Dong Jixue     & Wavelet transform & N/A                       & Grid-based partitioning method & Financial time-series \\ \hline
+    \end{tabular}%
+  }
+  \caption{Métodos de clustering basados en grid}
+  \label{tab:clus_grid}
+ \end{table}
+ 
+ \textit{Clustering basados en Múltiples Pasos}
+ 
+ Aunque hay muchos estudios para mejorar la calidad de los enfoques de representación, la medición de distancia, etc, unos pocos artículos hacen énfasis en algoritmos que mejoran y presentar un nuevo modelo (por lo general como un método híbrido) para la agrupación de los datos de series temporales. los métodos se resumen en la (tabla \ref{tab:clus_multi}).
+ 
+ % Please add the following required packages to your document preamble:
+ % \usepackage{graphicx}
+ \begin{table}[]
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|l|l|l|}
+      \hline
+      \textbf{Algoritmo de clustering}                                                    & \textbf{\begin{tabular}[c]{@{}l@{}}Método de \\ representación\end{tabular}}       & \textbf{\begin{tabular}[c]{@{}l@{}}Medida de \\ distancia\end{tabular}}                & \textbf{\begin{tabular}[c]{@{}l@{}}Comentario \\ (P:positivo, N: negativo)\end{tabular}}                                                                      \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Partitioning clustering,\\   k-Means and EM\end{tabular} & Wavelets                                                                           & Euclidean Distance                                                                     & \begin{tabular}[c]{@{}l@{}}P: Incremental \\ N: Sensitive to noise\end{tabular}                                                                               \\ \hline
+      two stages approach                                                                 & Raw time-series                                                                    & \begin{tabular}[c]{@{}l@{}}GLR \\ (generalized likelihood ratio)\end{tabular}          & \begin{tabular}[c]{@{}l@{}}N: Subsequence Segmentation. \\ Sensitive to noise\end{tabular}                                                                    \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Two-level clustering:\\   CAST,CAST\end{tabular}         & SAX, Raw time-series                                                               & \begin{tabular}[c]{@{}l@{}}Min-Dist, \\ Eucleadian distance\end{tabular}               & \begin{tabular}[c]{@{}l@{}}P: Support unequal time-series \\ N: Based on subsequence,\\ CAST is poor in front of huge \\ data Sensitive to noise\end{tabular} \\ \hline
+      \begin{tabular}[c]{@{}l@{}}Hybrid,\\   k-Medoids+Hierarchical\end{tabular}          & \begin{tabular}[c]{@{}l@{}}PAA \\ (Piecewise Aggregate Approximation)\end{tabular} & \begin{tabular}[c]{@{}l@{}}Euclidean distance and \\ Dynamic Time Warping\end{tabular} & \begin{tabular}[c]{@{}l@{}}P: Better accuracy over traditional\\   clustering algorithms\end{tabular}                                                         \\ \hline
+    \end{tabular}%
+  }
+  \caption{Métodos de clustering basados en multiples pasos}
+  \label{tab:clus_multi}
+ \end{table}
+
+\section{Evolución temporal de temas}\label{sec:nui_mt}
+
+\section{Proyección de datos multi-dimensionales}\label{sec:nlp_mt}
+Debido al incremento de datos, no solo en el número de registros, sino también en las dimensiones que poseen, como por ejemplo un vector de características de un documento, el vector característica estará conformado por el número de ocurrencias de cada palabra que contiene de tal forma si tenemos $m$ atributos se tendrá un vector $m$ dimensional.
+
+Métodos convencionales de visualización de datos fallan cuando son aplicados directamente sobre datos de alta dimensionalidad como en el caso de identificación de patrones \citep{berkhin2006survey}.
+
+Una forma de manejar esta alta dimensionalidad de forma que puedan ser visualizadas de forma correcta son las \textit{proyecciones multidimensionales}, estas técnicas permiten reducir la dimensionalidad de un espacio original $m$ a uno espacio $p$-dimensional donde $p$ $\ll$ $m$ pudiendo ser las dimensiones de $p$: ${1,2,3}$, ademas logran conservar en lo mas posible las relaciones de distancia del espacio original 
+
+\begin{defi}
+	(Proyección Multidimensional \citep{tejadaimproved}) Sea $X$ un conjunto de objetos en  $\mathbb{R}^{m}$ con $\updelta$ : $\mathbb{R}^m$ $x$ $\mathbb{R}^m$ $\longrightarrow$ $\mathbb{R}$ un criterio de proximidad entre objetos en $\mathbb{R}^m$, y $Y$ un conjunto de puntos en $\mathbb{R}^p$ para $p={1,2,3}$ y $d$ : $\mathbb{R}^p$ $x$ $\mathbb{R}^p$ $\longrightarrow$ $\mathbb{R}$ un criterio de proximidad en $\mathbb{R}^p$. Una técnica de proyección multidimensional puede ser descrita como una función $f:X \longrightarrow X$ cuyo objetivo es hacer $\mid \updelta(x_i,x_j)-d(f(x_i),f(x_j)) \mid$ o mas proximo posible a cero, $\forall x_i, x_j \in X$.
+\end{defi}
+
+\subsection{Técnicas de proyecciones de datos multidimensionales}
+Existen variedad de técnicas aplicadas a diferentes campos para la realizar proyecciones multidimensionales, según \citep{tejadaimproved} se pueden clasificar en tres grandes grupos: (1) \textit{Force-Direct Placement(FDP)}; (2) \textit{Multidimensional Scaling(MDS)}; y (1) \textit{Técnicas para reducción de dimensionalidad}.
+
+\section{árboles filo-genéticos}\label{sec:dbs_mt}
+
+
+%\citep{131:yoh:2001}
+%Figura \ref{fig:2d-3d-vr}
+%\begin{figure}[h]
+% \centering
+% \subfigure[]
+% {
+%   \includegraphics[width=0.45\columnwidth]{imagenes/bugarium.png}
+%   \label{fig:2d}
+% }
+% \subfigure[]
+% {
+%   \includegraphics[width=0.45\columnwidth]{imagenes/unifiedcity.png}
+%   \label{fig:3d}
+% }
+% \subfigure[]
+% {
+%   \includegraphics[width=0.45\columnwidth]{imagenes/teleinmersive.png}
+%   \label{fig:vr}
+% }
+% \caption{Tipos de representaciones de información. (a) Representación 2D - Bugarium \citep{018:yongpisanpop:2014}. (b) Representación 3D - UnifiedCity \citep{152:teyseyre:2009}. (c) Representación RV - Tele Inmersive Data Explorer.\citep{115:sawant:2000}}
+% \label{fig:2d-3d-vr}
+%\end{figure}

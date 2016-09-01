@@ -1,0 +1,325 @@
+
+
+
+\chapter{Adaptive Multi-level LSH} \label{sec:LSH}
+
+\Correction{In this section, we propose the \textit{Adaptive Multi-level LSH} to solve approximate similarity search on a dynamic set of objects.  As introduced in Section \ref{sec:intro}, our strategy is to design an adaptive data structure by considering a multi-resolution index structure. The Adaptive Multi-level LSH, like LSH, is based on the idea of projecting similar objects into the same bucket. But unlike LSH, it does not expect the data domain parameters. Hence, we do not need the full dataset to define the search space. Instead, we dynamically adapt the data domain parameters during the indexing process by using a multi-resolution approach, i.e., hash tables with dynamic capacity of hash functions are created during the index construction.}
+
+\Correction{As the performance of a hash table degrades if there are too many objects in one bucket, the number of buckets may need to grow dynamically. Two important methods to support graceful growth are extensible and linear hashing. Both start by hashing search-key values to long bit-strings and use a varying number of those bits to determine the bucket \cite{databaseSystems}. In our work, we apply the linear hashing approach because it allows expansion of the hash table one bucket at a time.}
+
+\Correction{Additionally, the multi-resolution index structure supports the use of the relations among different resolution levels to extend the candidate set of objects during the query process. As a consequence, fewer LSH hash tables are needed and the query process can be improved.}
+
+\subsection{The Multi-level structure}
+
+Recall that the original \ac{LSH} \cite{lsh} consists of $L$ hash tables with a fixed number of hash functions per hash table. Each hash table indexes the whole dataset and each bucket can contain an arbitrary number of objects. Our technique changes a one-level hash table into a Multi-level data structure.  In each level $t$ the data is organized using distinct numbers of hash functions. \Correction{The first level of the structure uses $m_1 = 4$ hash functions. The next levels use $m_t = m_{t-1} + 2, t > 1$ hash functions.  The initial value $m=4$ is the minimum number of hash functions needed to distribute data uniformly into buckets for a standard dataset.   Each bucket $I$ can store $C$ objects and a reference list, which keeps references to buckets located in the next level and with a vicinity relation with bucket $I$. Consecutive levels are thus connected.}
+
+\Correction{Figure \ref{fig:query_explore} illustrates the basic concept of the multi-level hashing by showing a 3-level structure, each level with resolution $4, 6, 8$ respectively.  The bucket capacity $C$ for this example is 2.}
+
+\begin{figure}[htp]\centering
+\includegraphics[width=0.75\columnwidth]{../images/mlsh.pdf}
+\caption{Multi-level LSH structure.  (a) internal view. (b)  logical view.}
+\label{fig:query_explore}
+\end{figure}
+
+\subsection{Construction of Multi-level LSH}
+
+While the basic LSH scheme indexes the whole dataset using $L$ hash tables with independent hash functions considering a fixed resolution $m$ (as described in Algorithm \ref{alg:lshalgorithm}), the adaptive Multi-level scheme can index data by incrementally adapting the number of hash functions. Thus, data is organized into a multi-resolution structure.
+
+\Correction{The Multi-level LSH is constructed by executing a recursive insertion procedure for each object of the dataset, for each hash table $T_i, 1 \leq i \leq L$. Thus, for a hash table $T_i$, if an object is supposed to be inserted into a bucket of level $t$ that is already full, it is hashed to the next level $t+1$, and so on. The relation between the bucket in the level $t$ and its vicinity in the following level $t+1$ is then established. The insertion algorithm for the Adaptive Multi-level LSH is described in Algorithm \ref{fig:mllshconstruction}. Notice that the input parameters are the object to be inserted and number of hash functions $m$, which is initially set to $m=4$ in order to initialize the hash table $T_i$.}
+
+\begin{algorithm}
+\caption{Insert(level $t$, Object $x$, Integer $m$ ) Note: for each hash table $T_i$, call $insert(T_i, x,4)$}\label{fig:lsh_insert}
+    \begin{algorithmic}[1]
+    \REQUIRE  The object to insert $x$ and the current level value $m$ (\# of hash functions)
+    \ENSURE   Insert the object $x$ into $T_i$
+    \IF { $H_t$ is NULL }
+        \STATE $H_t \Leftarrow \{h_1,...,h_{m}\}$  //Initialize the current level $t$ with a set of hash functions
+    \ENDIF
+    \STATE $x' \Leftarrow $ [$h_1(x),...,h_{m}(x)$] // Project $x$: $m$ projections using the set of hash functions $H_t$
+    \STATE $g \Leftarrow quantize( x' )$ // Quantization process - compute the final hash value
+    \STATE $I \Leftarrow T_t[\  g $ mod $ | T_t |\ ]$   // Locate the bucket $I$
+    \IF { $|I|$ < C }
+        \STATE add entry <$x$, $g$> on bucket $I$ // Store a reference to $x$ and value $g$ if $I$ is not full
+    \ELSE
+       \STATE Insert( nextLevel($t$), $x$, $m + 2$ ) // Otherwise, insert $x$ recursively in the next level
+       \STATE Save the connection between the current level and the next level on the reference list of $I$
+    \ENDIF
+\end{algorithmic}
+\label{fig:mllshconstruction}
+\end{algorithm}
+
+An important issue to be considered is the nonexistence of sufficient buckets in the index to partition the dataset effectively. To handle this problem, we follow the linear hashing approach \cite{linearHashing} to grow the number of buckets by 1 whenever the average bucket occupation reaches a threshold. We empirically set the default threshold to  75\%. Finally, as the population of a single bucket cannot cause the table to expand, overflow buckets are needed in some situations.
+
+
+
+\subsection{Similarity search in Adaptive Multi-level LSH}
+
+To solve similarity queries in the Multi-level LSH scheme, the query object $q$ is hashed to locate the appropriate bucket $I$ in each level $t$ by using $m_t$ hash functions. Once the bucket $I$ is located, the relevant candidate set are formed by $I$, the neighbors in the next level stored in the reference list of  $I$.  Then, the elements in the candidate set are exhaustively analyzed in order to recover only the objects that satisfy the query condition. This process is performed for each of the $L$ hash tables.
+
+The range query algorithm for the Adaptive Multi-level LSH is described in Algorithm \ref{alg:mllshrq}. \Correction{ For some queries (say kNN queries), the number of buckets to be explored are insufficient to ensure the quality results. Thus, to increment the candidate elements the basic LSH can use more hash tables. However, there is a much clever idea, the Multi-probe LSH \cite{multiprobe} employs multiple probes to extend the candidate set at query time. The problem is determine the number of probes required by a specific query.  As we can see in the next section the number of required probes depends on the query region density.}
+
+\begin{algorithm}
+    \caption{Range query algorithm for the Adaptive Multi-level LSH}
+    \begin{algorithmic}[1]
+    \REQUIRE The query object $q$ and the query radius $r$
+    \ENSURE  Objects that satisfy the query conditions.
+    \FOR{ $i = 1$ to $L$  }
+        \FOR{each level $t$ in the hash table $T_i$  }
+            \STATE $q' \Leftarrow $ [$h_1(q),...,h_m(q)$] // Project $x$: $m$ projections using the set of hash functions $H_{{(i,t)}}$
+            \STATE $g \Leftarrow quantize(q')$ // Quantization process - compute the final hash value
+            \STATE $I \Leftarrow T_{(i,t)}[\  g $ mod $ | T_{(i,t)} |\ ]$   // Locate the bucket $I$
+            \FOR { each entry $e$ in $I$, the vicinity of $I$ (probes), the reference list of $I$}
+                \STATE // Query condition. Note: $e = <x,g>$
+                \IF { $e.g = g1  \wedge  d(q, e.x) \leq r $ }
+                    \STATE report $e.x$ if it has not been previously reported
+                \ENDIF
+            \ENDFOR
+        \ENDFOR
+    \ENDFOR
+\end{algorithmic}
+\label{alg:mllshrq}
+\end{algorithm}
+
+%Figure \ref{mlshsearch} shows an example of the query process:  Here three indexes with three levels, each one discretizing the same search space with different hash functions.  The buckets explored at different levels for each index are colored. A query is solved by quickly hashing the query object into each hash table at different levels and then joining the results.  At the final step only objects into candidate buckets that are into the query range are reported.
+
+%\begin{figure}[htp]\centering
+%\includegraphics[width=0.5\columnwidth]{../images/dblsh.pdf}
+%\caption{Example of the range query process in Multi-level LSH.}
+%\label{mlshsearch}
+%\end{figure}
+
+\subsection{Selection of parameters}
+
+\NewMaterial{As discussed previously, there is a tradeoff between time and space on LSH techniques, which is related with parameters configuration. But in our proposal, these parameters are not so crucial to answer similarity queries on dynamic datasets.}
+
+\NewMaterial{The increment parameter, which defines the number $m$ of hash functions in the next level, was empirically determined by observing that when it is set with a high value, the elements though the multi-level structure tend to be uniformly distributed into the buckets. As  a consequence, most connection tend to have a one-to-one relationship. Under this experimental observation, we found that the increment value $2$ as the best value for which the Multi-level structure reaches a acceptable balance between space and time efficiency.}
+
+\NewMaterial{Another parameter is the bucket capacity $C$. If it is set with a high value, the number of levels will be small; otherwise, the number of levels will be large. To simplify our approach, we only consider the bucket capacity as a tuning parameter. }
+
+\NewMaterial{Thus, both the bucket capacity and the increment parameter  will determine the number of connections among buckets at different levels. We observed that these connections also determine density regions. Hence, as the number of connections among buckets at different levels is a good indicator to determine density regions, the number of probes to respond a specific query is defined by using the following rule: The first level uses $T_1 = all\_connections$ probes, where $all\_connections$ is the sum of all connections of implicated buckets when the query object $q$ is projected throughout all levels. The next levels use  $T_t =  T_{t-1} / 2 ; t > 1$ probes.  In other words,  the number of probes is set with a high value if the query region is dense.}
+%  Notice that the both values the increment
+%  the number of probes to be used in the next level)
+%\NewMaterial{Notice that the value of the increment parameter is equal to the decreasing rate. This relation is expected since, at the last levels, there are few elements. So, the only crucial parameter is $C$ (bucket capacity). We observed that our approach is applicable for different datasets, even datasets with dynamic number of objects, as we can see in the next section.}
+
+
+\section{Experimentos Preliminares}
+
+
+We performed a comprehensive performance evaluation of our algorithm in terms of the \textit{query performance (number of distance computations and response time)}, \textit{accuracy},  \textit{scalability}  and \textit{memory usage}.   The performance of Multi-level LSH was compared to those of the two most well-known LSH methods, namely LSH \cite{lsh} and Multi-probe LSH \cite{multiprobe}, and tree structures Slim-Tree \cite{SlimTree}  DF-Tree \cite{dftree} and DBM-Tree \cite{DBMTree}. Furthermore, for all the LSH-based methods we compared their query results with linear-scan search to measure the search accuracy. The Euclidean distance ($L_2$) was used as the distance function in our experiments.
+
+The Multi-level and all the LSH indexing methods were implemented in C++ into the Arboretum library \footnote{\url{http://www.gbdi.icmc.usp.br/arboretum/}}, all with the same code optimization, to obtain a fair comparison.  All of the experiments were performed on a 3.4Ghz Pentium 4 with 2Gb RAM.
+
+\subsection{Dataset description}
+
+We used synthetic and real datasets in our experiments.
+\begin{enumerate}
+   \item  \textbf{synt16} This synthetic dataset contains 10,000 16-dimensional vectors normally distributed into 10 clusters  in a 16-d unit hypercube.
+   \item \textbf{synt32} Similar to Synthetic16D, but this contains 100,000 32-dimensional vectors.
+   \item \textbf{synt64} Similar to Synthetic16D, but this is a 64-d unit hypercube.
+   \item \textbf{synt256} Similar to Synthetic16D, but this is a 256-d unit hypercube.
+   \item \textbf{color} This real dataset contains 68,000 32-dimensional vectors. Each vector describes the color histogram of an image in the Corel collection \footnote{\url{http://kdd.ics.uci.edu/databases/CorelFeatures/}}.
+   \item \textbf{mnist} This real dataset contains 60,000 50-dimensional vectors.  The MNIST \footnote{\url{http://yann.lecun.com/exdb/mnist/}} dataset of handwritten digits is a subset of a larger set available from NIST (National Institute of Standards and Technology)  database.  The dimensionality is reduced by taking the 50 dimensions with the largest variances. % (National Institute of Standards and Technology)
+   \item \textbf{audio} This real dataset contains 54,387 192-dimensional vectors. The audio dataset comes from the LDC SWITCHBOARD-1 \footnote{\url{http://www.ldc.upenn.edu/Catalog/docs/switchboard/}} collection. It is a collection of about 2,400 two-sided telephone conversations among 543 speakers from all areas of the United States.
+\end{enumerate}
+
+The process to generate the synthetic datasets is described in \cite{MTree}.   These synthetic datasets were widely used to test metric access methods due to their simplicity to create complex sceneries. The color, mnist, and audio are real datasets and they were mainly used to test LSH  in \cite{lsh} and \cite{multiprobe}. \Correction{In our experiments, a test set was created for each dataset using 500 objects randomly chosen from the dataset. Half of them (250) were removed from the dataset before creating the indexes. This configuration allows us to evaluate queries with centers into the index or not.}
+
+\subsection{Experiment 1: Similarity search performance}
+LSH based methods report efficient results when adequate values for $m$ (number of hash functions), $L$ (number of indexes), $T$ (number of probes for Multi-probe LSH) are chosen. The LSH parameters ($m$ and $L$) used in this experiment were tuned according to the implementation of Exact Euclidean LSH (E2LSH) \footnote{\url{http://www.mit.edu/~andoni/LSH/}}. The tuning parameter $m$ is chosen as a function of the dataset to minimize the running time  of a query  while the space requirement is within the memory bounds. \Correction{$L$ is given by $L = m(m-1)/2$}. \NewMaterial{And $T$ is defined using the following reasoning: The original LSH uses $L$ projections to respond a query. The Multi-probe LSH requires fewer indexes to respond a query (say $L'$, $L' < L$). Thus, the number of projections used by the Multi-probe LSH is $L' \times T$ which should be approximately equal to $L$. This reasoning is not always exact (e.g., non-uniform datasets are especial cases). So for some datasets the $T$ parameter was tuned by hand in order to report comparable search accuracy.  The query range for LSH and Multi-probe LSH was set to $r = 10.0$\% of the largest distance between pairs of objects in the dataset and the approximation ratio was configured to $c = 1.05$ which means 95\% of success probability at query time.}
+
+Note that our technique only needs information the bucket capacity $C$ and the number of indexes $L$.  Table \ref{lshparams} shows the LSH parameters used in these experiments for the original LSH, Multi-probe LSH, and Multi-level LSH. For simplicity, in all experiments the page size for Slim-Tree \cite{SlimTree}, DF-Tree \cite{dftree} and DBM-Tree \cite{DBMTree} was configured to keep 64 objects per node.
+\begin{table}
+    \centering
+
+\begin{footnotesize}
+
+    \begin{tabular}{llr}
+    \toprule
+    \multicolumn{3}{c}{ LSH parameters } \\
+    \hline
+                Dataset & Method & Parameters \\
+    \hline
+    \multirow{4}{*}{synt16 (16-D)} & LSH & $L=10$, $m = 8$ \\
+                                    & Multi-probe LSH & $L=3$, $m = 8$, $T = 20$ \\
+                                    & Multi-level LSH  & $L=3$, $C = 64$ \\
+    \hline
+    \multirow{4}{*}{synt32 (32-D)}  & LSH & $L=135$, $m = 24$ \\
+                                    & Multi-probe LSH & $L=14$, $m = 10$, $T = 30$ \\
+                                    & Multi-level LSH  & $L=17$, $C = 64$ \\
+    \hline
+    \multirow{4}{*}{synt64 (64-D)}  & LSH & $L=54$, $m = 10$ \\
+                                    & Multi-probe LSH & $L=8$, $m = 10$, $T = 30$ \\
+                                    & Multi-level LSH  & $L=8$, $C = 64$ \\
+    \hline
+    \multirow{4}{*}{synt256 (256-D)}& LSH & $L=231$, $m = 16$ \\
+                                    & Multi-probe LSH & $L=40$, $m = 16$, $T = 40$ \\
+                                    & Multi-level LSH  & $L=40$, $C = 256$ \\
+    \hline
+    \multirow{4}{*}{color (32-D)}   & LSH & $L=153$, $m = 14$ \\
+                                    & Multi-probe LSH & $L=35$, $m = 14$, $T = 20$ \\
+                                    & Multi-level LSH  & $L=35$, $C = 128$ \\
+    \hline
+    \multirow{4}{*}{mnist (50-D)}   & LSH & $L=231$, $m = 16$ \\
+                                    & Multi-probe LSH & $L=37$, $m = 16$, $T = 30$ \\
+                                    & Multi-level LSH  & $L=37$, $C = 128$ \\
+    \hline
+    \multirow{4}{*}{audio (192-D)}  & LSH & $L=62$, $m = 20$ \\
+                                    & Multi-probe LSH & $L=10$, $m = 20$, $T = 40$ \\
+                                    & Multi-level LSH  & $L=10$, $C = 256$ \\
+    \bottomrule
+    \end{tabular}
+
+\end{footnotesize}
+
+  \caption{LSH parameters for synt16, synt64, synt256, mnist, color, and audio datasets.}
+  \label{lshparams}
+\end{table}
+
+\paragraph*{Number of distance Computations and Response Time}
+
+The aim of this experiment is to measure the average number of distance computations and the total time spent to retrieve the nearest neighbor objects from a dataset using range queries $rQ$ and k-nearest neighbor queries $kNNq$.  The data structures being compared were tested with different radius values for the $rQ$ queries, ranging from 1.0\% to 10.0\% of the largest distance between pairs of objects in the dataset and from 1 to 10 for the $kNN$ queries. Figures \ref{fig:knn_1}, \ref{fig:rq_2} shows the comparison in terms of average number of distance computations and total time for all the methods.  \Correction{The basic LSH is faster than metric trees independent of the dimension or size of the dataset. These results indicate that Multi-probe and Multi-level LSH are more efficient than any metric tree considered in this paper. This is expected since metric tree structures suffer from ``curse of dimensionality'' problem. This implies overlapping among regions when the dimensionality is very high, and as a consequence, they need to explore many paths in the tree structure during the query process.}
+
+%\NewMaterial{LSH methods do not have these problems as they only hash the query object into the hash tables. However, there is a tradeoff among space, speed and quality. The traditional LSH ensures good quality of query results, but requires parameters tuning for optimal performance in different domains. In most cases, this implies expensive space and query cost. Even though, Multi-probe and Multi-level LSH reduce the space needed, the quality and efficiency has a certain umbral limit for some greatest $k$ in kNN queries or greatest $r$ in range queries. The greatest different among these approaches is when the Multi-probe LSH works on  a dynamic set of object.  As we can see in the scalability experiments the Multi-probe LSH is more robust when the dataset distribution change continuously.}
+
+
+%In exact search, a majority of the query cost is spent on verifying a point as a real NN. Approximate retrieval improves efficiency by relaxing the precision of verification.
+%leverage the knowledge of the query distribution to balance the efficiency and result quality.
+%that enables efficient approximate NN queries with excellent result quality.
+%\begin{figure*}[!t]
+%\centering
+%\includegraphics{../images/rq_experiments_1.pdf}
+%\caption{Distance computation experiments. Comparison of Multi-level LSH by range query (rQ) distance computations in range search at various radii.}
+%\label{fig:rq_1}
+%\end{figure*}
+\begin{figure*}[!t]
+\centering
+\includegraphics{../images/knn_experiments_1.pdf}
+\caption{Comparison of k nearest neighbor queries (kNNq) at various k using the average number of distance computations (first row) and response time (second row) for \textit{synt16} (first column), \textit{synt64} (second column) and \textit{synt256}(third column) datasets.}
+\label{fig:knn_1}
+\end{figure*}
+\begin{figure*}[!t]
+\centering
+\includegraphics{../images/rq_experiments_2.pdf}
+\caption{Comparison of range queries (rQ) at various radii using the average number of distance computations (first row) and response time (second row) for \textit{mnist} (first column), \textit{color} (second column) and \textit{audio}(third column) datasets.
+}
+\label{fig:rq_2}
+\end{figure*}
+%\begin{figure*}[!t]
+%\centering
+%\includegraphics{../images/knn_experiments_2.pdf}
+%\caption{Distance computation experiments. Comparison of Multi-level LSH by range query (rQ) distance computations in range search at various radii.}
+%\label{fig:knn_2}
+%\end{figure*}
+%\newpage
+Tables \ref{tab:ndc} and \ref{tab:tt} shows the average number of distance computation and total response time for all hash based approaches using range queries.  Multi-level LSH outperforms the other structures decreasing the query time (number of distance computations) by up to 51\%  (72\%)  in comparison to the original LSH and 34\% (45\%) in comparison to Multi-probe LSH  as it can be observed in tables \ref{tab:ndc} and \ref{tab:tt}.
+
+\Correction{In this experiment, we observed that the structure with the three-level hash tables (for a appropriate  parameter $C$) give a superior performance over one-level hash table (the basic LSH or multi-probe LSH) in term of time and space.  Under this configuration our technique is good at distributing objects into buckets uniformly at different levels and quickly retrieving them using hashing functions.  This is because in contrast to LSH, Multi-level LSH  exploits the multi-resolution index structure to \textit{compute and locate the probes needed} for a specific query.  Thus, multiple probes are computed by each index in the query process and as a consequence they do not need more indexes to ensure the same quality results.}
+
+\begin{table}[!t]
+\centering
+\begin{footnotesize}
+
+     \begin{tabular}{c|r|r|r|r|r|r|r|r|}
+    \cline{2-9}
+    & \multicolumn{ 2}{|c|}{{\bf color}} & \multicolumn{ 2}{|c|}{{\bf minst}} & \multicolumn{ 2}{|c|}{{\bf audio}} & \multicolumn{ 2}{|c|}{{\bf synt256}} \\
+    \cline{2-9}
+    & NDC   & \%gained & NDC   & \%gained & NDC   & \%gained & NDC   & \%gained \\
+    \hline
+    \multicolumn{1}{|c|}{\bf LSH} & 541   & 0,00\% & 11.427 & 0,00\% & 6.373,36 & 0,00\% & 2.207 & 4,58\% \\
+    \multicolumn{1}{|c|}{\bf Multi-probe LSH} & 340   & 37,12\% & 8.310 & 27,28\% & 5.175,18 & 18,80\% & 2.313 & 0,00\% \\
+    \multicolumn{1}{|c|}{\bf Multi-level LSH} & 322   & 40,38\% & 3.116 & 72,73\% & 2.588,36 & 59,39\% & 1.854 & 19,84\% \\
+    \hline
+    \end{tabular}
+\end{footnotesize}
+\caption{Comparison of Number of Distance Computation (NDC) for each LSH method. Results for the color (32-D), minst (50-D), audio (190-D) and synt256 (265-D) datasets}
+\label{tab:ndc}
+\end{table}
+\begin{table}[!t]
+    \centering
+    \begin{footnotesize}
+     \begin{tabular}{c|r|r|r|r|r|r|r|r|}
+    \cline{2-9}
+    & \multicolumn{ 2}{|c|}{{\bf color}} & \multicolumn{ 2}{|c|}{{\bf minst}} & \multicolumn{ 2}{|c|}{{\bf audio}} & \multicolumn{ 2}{|c|}{{\bf synt256}} \\
+    \cline{2-9}
+    & TT    & \%gained & TT    & \%gained & TT    & \%gained & TT    & \%gained \\
+    \hline
+    \multicolumn{1}{|c|}{\bf LSH} & 2,87  & 0,00\% & 9,88  & 0,00\% & 15,892 & 0,00\% & 12,588 & 0,00\% \\
+    \multicolumn{1}{|c|}{\bf Multi-probe LSH} & 2,64  & 8,01\% & 6,82  & 30,94\% & 13,133 & 17,36\% & 8,715 & 30,77\% \\
+    \multicolumn{1}{|c|}{\bf Multi-level LSH} & 2,74  & 4,53\% & 5,05  & 48,94\% & 7,776 & 51,07\% & 6,345 & 49,59\% \\
+    \hline
+    \end{tabular}
+\end{footnotesize}
+
+\caption{Comparison of Total Time (TT) for each LSH method. Results for the color (32-D), minst (50-D), audio (190-D) and synt256 (265-D) datasets}
+\label{tab:tt}
+\end{table}
+
+
+\subsection{Experiment 2: Accuracy}
+
+The goal of this experiment is to evaluate the average accuracy of our approach  against other well-known indexes. Given an index and a dataset, we evaluate the average accuracy by performing a range query and k-nearest neighbor query. For each query result we check if it includes the same elements reported by a linear scan with euclidean distance as dissimilarity function. After repeating this process for all objects in the test set (500 iterations), we average the precision values of the index.  We perform a similar procedure to that of Experiment 1 to evaluate the similarity search performance and show the results in Table \ref{tab:accuracy} for all hash-based approaches (LSH, Multi-probe LSH, and Multi-level LSH). \Correction{Since metric trees report exact result only results for hash-based approaches  are shown.
+This is because the distance function used in this experiment defines a suitable metric space to perform similarity queries. In contrast, LSH  is based on projection into subspaces in a approximately way and only can report good results for ranges less than $c \times r$. Even though, Multi-probe and Multi-level LSH overcame this problem by using multiples probes in each index, the quality and efficiency has a certain umbral limit for some greatest $k$ in kNN queries or greatest $r$ in range queries as we will see in the scalability experiments.}
+%This problem  is overcame by using multiples probes in each index such as in Multi-probe and Multi-level LSH.
+\begin{table}[htbp]
+\begin{footnotesize}
+\centering
+  \begin{tabular}{c|r|r|r|r|r|r|r|r|r|}
+  \cline{2-10}
+    & \multicolumn{3}{|c|}{{\bf color}} & \multicolumn{ 3}{|c|}{{\bf minst}} & \multicolumn{ 3}{|c|}{{\bf audio}} \\
+    \cline{2-10}
+   & NDC   & \%gained & accuracy & NDC   & \%gained & accuracy & NDC   & \%gained & accuracy \\
+    \hline
+
+  \multicolumn{1}{|c|}{\bf LSH} & 541   & 0,00\% & 0,99 & 11.427 & 0,00\% & 1,00                    & 6.373 & 0,00\% & 0,99 \\
+  \multicolumn{1}{|c|}{\bf Multi-probe LSH} & 340   & 37,12\% & 0,99 & 8.310 & 27,28\% & 1,00       & 5.175 & 18,80\% & 0,99 \\
+  \multicolumn{1}{|c|}{\bf Multi-level LSH} & 322   & 40,38\% & 0,99 & 3.116 & 72,73\% & 0,995      & 2.588 & 59,39\% & 0,94 \\
+      \hline
+  \end{tabular}
+\end{footnotesize}
+\caption{Average accuracy for the color (32-D), minst (50-D) and audio (190-D) datasets.}
+\label{tab:accuracy}
+\end{table}
+
+\subsection{Experiment 3: Scalability}
+
+In this experiment, we want to study the behavior of our technique and dynamic indexes, Slim-Tree \cite{SlimTree}, DF-Tree \cite{dftree} and DBM-Tree \cite{DBMTree}, as the size of the dataset increases. We vary the size of the dataset and measure performance to determine scalability.  We split the synt32 dataset by 10. After inserting each subset we run sets of queries executing 500 similarity queries. The behavior was equivalent for different values of k and radius, thus we present only the result for $k = 100$ and radius = 5.0\% of the largest distance between pairs of objects in the dataset. Figures \ref{fig:rq_scalability}, \ref{fig:knn_scalability} show  the average number of distance computations, response time and accuracy for synt32 dataset using range queries and k-nearest neighbors queries. \Correction{Multi-level LSH shows sub-linear behavior when the number of elements indexed grows, what makes the scheme sufficient to index very large datasets.  Moreover, Multi-level LSH exhibits good accuracy while the bucket capacity is near to the query condition. For range queries, our approach shows reasonable accuracy  ( $ \geq 90\%$) while the radius is less than 2.5\% of the largest distance between pairs of objects in the dataset. For greater ranges, increasing of the number of probes should be sufficient and if it is not the case, the number of indexes can be increased in order to ensure satisfactory results.}
+
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.95\columnwidth]{../images/rq_scalability.pdf}
+\caption{Comparison of range query (rQ) at 5.0\%. The average number of distance computations (first column), response time (second column) and accuracy (third column) is shown for \textit{synt32} dataset.}
+\label{fig:rq_scalability}
+\end{figure*}
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.95\columnwidth]{../images/knn_scalability.pdf}
+\caption{Comparison of 100-nearest neighbor query (kNNq). The average number of distance computations (first column), response time (second column) and accuracy (third column) is shown for \textit{synt32} dataset.}
+\label{fig:knn_scalability}
+\end{figure*}
+
+%% falta
+\subsection{Experiment 4: Usage Space}
+
+Table \ref{spaceusage} shows the memory used in Megabytes by LSH, Multi-probe LSH, Multi-level LSH, Slim-Tree, and DF-Tree.  Only the well-balanced tree (Slim-Tree) and the tree designed to prune more sub trees (DF-Tree) are considered for this experiment because they have the minimum and maximum usage space uses among the trees analyzed.  We take the number of buckets and nodes with their respectively capacity  as measures to compute the space usage. LSH needs more memory than metric trees; however, Multi-level LSH reduces space usage by up to 35\% in comparison to the original LSH and it has similar scores in comparison to Multi-probe LSH. \Correction{This is expected since Multi-level LSH and Multi-probe LSH use fewer number of indexes  due to instead of probing only one bucket for each  hash table in the query algorithm, these methods use multiple buckets that are likely to contain query results in a hash table, as a result, fewer indexes are needed. An interesting observation about Multi-probe LSH, Multi-level LSH and DF-Tree (the tree designed to prune more sub trees) is that they use a quite similar amount of memory.}
+
+\begin{table}[htbp]
+
+\begin{footnotesize}
+    \centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+  \hline
+  % after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
+  method  / dataset & synt16 & synt64 & synt256 & mnist & color & audio \\ \hline
+    LSH             & 12 & 58 & 252 & 740 & 1404 & 1428 \\
+    Multi-probe LSH & 3 & 14 & 63 & 185 & 351 & 376 \\
+    Multi-level LSH & 3 & 15 & 88 & 235 & 352 & 546 \\
+    Slim-Tree & 2 & 8 & 47 & 29 & 23 & 94 \\
+    DF-Tree & 3 & 23 & 95 & 28 & 38 & 258 \\
+  \hline
+\end{tabular}
+\end{footnotesize}
+    \caption{Space usage experiments. Comparison of the memory used by LSH, Multi-probe LSH, Multi-level LSH, Slim-Tree, and DF-Tree in Megabytes}
+  \label{spaceusage}
+\end{table}
+%\subsection{Experiment discussions}
