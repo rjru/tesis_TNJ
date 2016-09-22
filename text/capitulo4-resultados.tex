@@ -2,172 +2,84 @@
 
 \section{Evaluación de Resultados}
 
-En esta sección se presentan las mediciones realizadas durante la evaluación y comparación de la interfaz tradicional de ALICIA (Alicia-Web) y el modelo de interfaz propuesto basado en realidad virtual (AliciaVR). 
+Los siguientes resultados fueron evaluaciones de métodos de proyección usando un parte la herramienta \citep{paulovich2007projection}, haciendo también uso de conjuntos de datos temporales. Se contrastaron los métodos de proyección con medicines de distancia o similitud comunes como son la distancia euclidina y especificas para series temporales como son \textit{Dynamic time warping}.
 
-\subsection{Tabulación de Datos Recopilados}
+\subsection{Synthetic Control Chart}
+Esta conjunto de datos temporales fueron extraídos de \citep{UCRArchive}, y consta de 6 clases: \textit{Normal, Cyclic, Increasing trend, Decreasing trend, Upward shift y Downward shift} con 600 muestras de 60 dimensiones cada series de tiempo.
+Las figuras \ref{fig:sc_idmap_euclidiana}, \ref{fig:sc_idmap_dtw} muestran las propuestas hechas en \citep{alencar2007mineraccao}, donde se hace uso del método de proyección IDMAP con datos temporales usando distancia euclidiana y el \textit{dynamic time warping} respectivamente.
 
-En el Cuadro \ref{tabla:eficacia} se muestran los datos obtenidos mediante observación a los usuarios empleando las dos diferentes interfaces, midiendo la eficacia de cada interfaz con las métricas definidas por la norma estándar ISO 9241. La eficacia es el logro de objetivos o cumplimiento de tareas, por tanto, está representada por un número que indica la cantidad de objetivos cumplidos. En las diferentes métricas se contabilizan el número de objetivos cumplidos, pudiendo ser estos tareas realizadas, funciones utilizadas, etc.
+ En las figuras \ref{fig:sc_nj_euclidiana}, \ref{fig:sc_nj_dtw}, se observa el comportamiento del método de proyección \textit{Neighbours joining} tanto con distancia euclidiana como \textit{dynamic time warping}.
 
-\begin{table}[h]
+% \ref{fig:sc_idmap_euclidiana}, \ref{fig:sc_idmap_dtw}, \ref{fig:sc_nj_euclidiana}, \ref{fig:sc_nj_dtw}.
+
+\begin{figure}[!tbp]
 	\centering
-	\begin{tabular}{|l|p{2.2cm}|p{2.2cm}|}
-		\hline
-		\multicolumn{3}{|c|}{Comparación de la Eficacia de la Interfaz} \\
-		%\hline
-		% & Alicia-web & AliciaVR \\
-		\hline Métricas ISO 9241 - Medición de la Eficacia & Alicia-Web (Cantidad Media)  & AliciaVR (Cantidad Media)  \\
-		\hline \hline %2 y 3 son porcentajes
-		Número de tareas importantes realizadas & 4.2 & 2.0 \\
-		Número de funciones relevantes utilizadas & 7.8 & 3.8 \\
-		Número de tareas completadas con éxito al primer intento & 2.2  & 1.2 \\
-		Número de tareas importantes realizadas & 2.8 & 2.2\\
-		Número de llamadas para soporte & 0.6 & 3.4\\
-		Número de accesos a la ayuda & 0.2 & 0.4\\
-		\hline
-	\end{tabular}
-	\caption{Comparación de la eficacia empleando las dos interfaces.}
-	\label{tabla:eficacia}
-\end{table}
+	\begin{minipage}[b]{0.52\textwidth}
+		\includegraphics[width=\textwidth]{imagenes/resultados/sc_idmap_euclidiana.png}
+		\caption{Proyección IDMAP con distancia euclidiana}
+		\label{fig:sc_idmap_euclidiana}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{imagenes/resultados/sc_idmap_dtw.png}
+		\caption{Proyección IDMAP con distancia DTW}
+		\label{fig:sc_idmap_dtw}
+	\end{minipage}
+\end{figure}
 
-En el Cuadro \ref{tabla:eficiencia} se muestran los datos obtenidos mediante observación a los usuarios empleando las dos diferentes interfaces, midiendo la eficiencia de cada interfaz con las métricas definidas por la norma estándar ISO 9241. La eficiencia es el uso óptimo de recursos requeridos para el cumplimiento de un objetivo, donde el tiempo es el principal recurso empleado en la utilización de una interfaz de un software. Mientras más tiempo le demore al usuario realizar las tareas la interfaz será menos eficaz, por el contrario si este tiempo es menor entonces la interfaz es más eficaz.
 
-\begin{table}[h]
+\begin{figure}[!tbp]
 	\centering
-	\begin{tabular}{|l|p{2.2cm}|p{2.2cm}|}
-		\hline
-		\multicolumn{3}{|c|}{Comparación de la Eficiencia de la Interfaz} \\
-		%\hline
-		% & Alicia-web & AliciaVR \\
-		\hline Métricas ISO 9241 - Medición de la Eficiencia & Alicia-Web (Tiempo Medio-Seg.) & AliciaVR (Tiempo Medio-Seg.)  \\
-		\hline \hline %2 y 3 son porcentajes
-		Tiempo empleado en el primer intento & 47.3 & 35.6\\
-		Tiempo empleado en reaprender funciones & 31.2 & 16.6 \\
-		Tiempo productivo & 78.6 & 54.0\\
-		Tiempo para aprender características & 48.6 & 34.2\\
-		Tiempo para reaprender características & 29.4 & 10.2\\
-		Tiempo empleado en la corrección de errores & 54.6 & 55.8\\
-		\hline
-	\end{tabular}
-	\caption{Comparación de la eficiencia empleando las dos interfaces}
-	\label{tabla:eficiencia}
-\end{table}
+	\begin{minipage}[b]{0.55\textwidth}
+		\includegraphics[width=\textwidth]{imagenes/resultados/sc_nj_euclidiana.png}
+		\caption{ Proyección NJ con distancia euclidiana}
+		\label{fig:sc_nj_euclidiana}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{imagenes/resultados/sc_nj_dtw.png}
+		\caption{Proyección NJ con distancia DTW}
+		\label{fig:sc_nj_dtw}
+	\end{minipage}
+\end{figure}
 
-En el Cuadro \ref{tabla:satisfaccion} se muestran los datos obtenidos mediante observación a los usuarios empleando las dos diferentes interfaces, midiendo la satisfacción con respecto a cada interfaz con las métricas definidas por la norma estándar ISO 9241. La satisfacción es el grado o nivel de conformidad del usuario, es su apreciación personal al valorar la interfaz del software. Para poder medir la satisfacción del software en diferentes aspectos, el usuario debe de elegir de cinco alternativas de valoración: (1) Nada satisfecho, (2) Poco Satisfecho, (3) Regularmente satisfecho (4) Muy satisfecho, (5) Completamente satisfecho. Posteriormente a cada alternativa de satisfacción le corresponde un porcentaje de valoración que son respectivamente: 0.2, 0.4, 0.6, 0.8, 1.0. Al promediar los niveles de satisfacción finalmente podemos obtener el porcentaje de satisfacción global requerida en cada métrica.    
 
-\begin{table}[h]
+\subsection{Gun Point}
+Disponibles también en \citep{UCRArchive}, contiene 2 clases, con un total de 200 registros y una longitud de series de tiempo de 150. Este conjunto de datos posee como se había mencionado antes posee dos clases las cuales son \textit{Point} y \textit{Gun}, siendo la principal diferencia que en una el personaje apunta con su dedo mientras en el otro grupo con un arma.
+Este conjunto es de difícil análisis pues las dos clases no presentan grandes diferencias. En la figuras \ref{fig:gp_lsp_dtw}, \ref{fig:gp_nj_dtw} se muestran las proyecciones LSP y NJ usando la distancia DTW.
+
+\begin{figure}[!tbp]
 	\centering
-	\begin{tabular}{|l|p{1.8cm}|p{1.8cm}|}
-		\hline
-		\multicolumn{3}{|c|}{Comparación de la Satisfacción de la Interfaz} \\
-		%\hline
-		% & Alicia-web & AliciaVR \\
-		\hline Métricas ISO 9241 - Medición de la Satisfacción & Alicia-Web (\% Medio)  & AliciaVR (\% Medio) \\
-		\hline \hline %2 y 3 son porcentajes
-		Calificación de la satisfacción con las características importantes & 0.32 & 0.72\\
-		Calificación de la facilidad de aprendizaje & 0.44 & 0.64 \\
-		Calificación del tratamiento de errores & 0.28 & 0.24\\
-		Tasa de uso voluntario del producto & 0.64 & 0.92 \\
-	    \hline
-	\end{tabular}
-	\caption{Comparación de la satisfacción empleando las dos interfaces}
-	\label{tabla:satisfaccion}
-\end{table}
+	\begin{minipage}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{imagenes/resultados/gp_lsp_dtw.png}
+		\caption{Proyección LSP con distancia DTW}
+		\label{fig:gp_lsp_dtw}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{imagenes/resultados/gp_nj_dtw.png}
+		\caption{Proyección NJ con distancia DTW}
+		\label{fig:gp_nj_dtw}
+	\end{minipage}
+\end{figure}
 
-\subsection{Análisis Mediante Estadística Inferencial}
 
-Para determinar si con los datos obtenidos podemos concluir que la Eficacia es mayor empleando una interfaz que la otra, es que aplicamos una prueba estadística para realizar la inferencia global. La prueba utilizada es la prueba estadística ``T de Student'' para diferencia de dos medias apareadas. 
+\subsection{Alessandro Vespignani dataset}
+Es un conjunto de resúmenes de artículos relacionados que tienen como autor a Alessandro Vespignami entre los años 1990 al 2012. Cuenta con información como año de publicación referencias, resumen etc. Este conjunto de datos a sido usado en \citep{alencarvisualizaccao}. La figura \ref{fig:t_lsp} muestra los resultados obtenidos por \citep{alencarvisualizaccao}, mientras en la figura \ref{fig:t_nj} se utilizo esta misma base de datos usando la proyección \textit{Neighbours joining}.
+En \ref{fig:t_lsp} los puntos son artículos científicos, los enlaces son las referencias entre artículos, y el color esta dado por la fecha de publicación de cada articulo. En la figura \ref{fig:t_nj} se pierde las referencias bibliográficas, pero en su modelo de árbol permite ver la relación local entre documentos, aun así el año de publicación aun se muestra de manera desordenada.  
 
-En el Cuadro \ref{tabla:t-eficacia} se muestran los valores obtenidos al aplicar la prueba estadística. Donde el valor \textit{p} es de 0.019, que al ser menor de 0.05 (\( \textit{p} < \alpha \)) se interpreta como la existencia de evidencia suficiente para afirmar que los grupos son diferentes y la diferencia al ser positiva (0.81) indica que la eficacia de la primera interfaz (Alicia-Web) es mayor que la eficacia de la segunda interfaz (AliciaVR). 
 
-\begin{table}[htb]
+\begin{figure}[!tbp]
 	\centering
-	\begin{tabular}{|c|c|c|c|c|c|c|c|}% p{2.2cm} 
-		\hline
-		\multicolumn{8}{|c|}{Prueba T-Student para la Eficacia }\\
-		\hline
-	 	\multirow{3}{*}{} & \multicolumn{4}{c|}{Diferencias por pares} & \multirow{3}{*}{\textit{t}} & \multirow{3}{*}{\textit{df}} & \multirow{3}{*}{\textit{Sig.(2-colas)}}\\ \cline{2-5}
-	 	 & \multirow{2}{*}{\textit{Dif. Medias}} & \multirow{2}{*}{\textit{Error Des.Est.}} & 	\multicolumn{2}{c|}{\textit{95\% Int. Confianza}} &  &  & \\ \cline{4-5}
-	 	 &  &  & \textit{Bajo} & \textit{Alto} &  &  & \\
-		\hline \hline
-		Eficacia & 0.81 & 1.25 & -1.989 & 3.589 & 0.639 & 10 & 0.019 \\
-		\hline 
-    \end{tabular}
-	\caption{Aplicación de la prueba T-Student a la eficacia.}
-	\label{tabla:t-eficacia}
-\end{table}
-
-Para determinar si con los datos obtenidos podemos concluir que la Eficiencia es mayor empleando una interfaz que la otra, es que aplicamos una prueba estadística para realizar la inferencia global. La prueba utilizada es la prueba estadística ``T de Student'' para diferencia de dos medias apareadas. 
-
-En el Cuadro \ref{tabla:t-eficiencia} se muestran los valores obtenidos al aplicar la prueba estadística. Donde el valor \textit{p} es de 0.021, que al ser menor de 0.05 (\( \textit{p} < \alpha \)) se interpreta como la existencia de evidencia suficiente para afirmar que los grupos son diferentes y la diferencia al ser positiva (13.87) indica que el tiempo empleado en cada tarea con la primera interfaz (Alicia-Web) es mayor que empleando la segunda interfaz (AliciaVR). Por tanto, como se emplea menos tiempo en la segunda interfaz, concluimos que la Eficiencia es mayor utilizando la interfaz AliciaVR que utilizando la interfaz tradicional de ALICIA.
-
-\begin{table}[htb]
-	\centering
-	\begin{tabular}{|c|c|c|c|c|c|c|c|}% p{2.2cm} 
-		\hline
-		\multicolumn{8}{|c|}{Prueba T-Student para la Eficiencia }\\
-		\hline
-		\multirow{3}{*}{} & \multicolumn{4}{c|}{Diferencias por pares} & \multirow{3}{*}{\textit{t}} & \multirow{3}{*}{\textit{df}} & \multirow{3}{*}{\textit{Sig.(2-colas)}}\\ \cline{2-5}
-		& \multirow{2}{*}{\textit{Dif. Medias}} & \multirow{2}{*}{\textit{Error Des.Est.}} & 	\multicolumn{2}{c|}{\textit{95\% Int. Confianza}} &  &  & \\ \cline{4-5}
-		&  &  & \textit{Bajo} & \textit{Alto} &  &  & \\
-		\hline \hline
-		Eficiencia & 13.87 & 10.57 & -9.68 & 37.43 & 1.31 & 10 & 0.021 \\
-		\hline 
-	\end{tabular}
-	\caption{Aplicación de la prueba T-Student a la eficiencia.}
-	\label{tabla:t-eficiencia}
-\end{table}
-
-Para determinar si con los datos obtenidos podemos concluir que la Satisfacción es mayor empleando una interfaz que la otra, es que aplicamos una prueba estadística para realizar la inferencia global. La prueba utilizada es la prueba estadística ``T de Student'' para diferencia de dos medias apareadas. 
-
-En el Cuadro \ref{tabla:t-satisfaccion} se muestran los valores obtenidos al aplicar la prueba estadística. Donde el valor \textit{p} es de 0.024, que al ser menor de 0.05 (\( \textit{p} < \alpha \)) se interpreta como la existencia de evidencia suficiente para afirmar que los grupos son diferentes y la diferencia al ser negativa (-0.21) indica que la satisfacción con respecto a la primera interfaz (Alicia-Web) es menor que la satisfacción con respecto a la segunda interfaz (AliciaVR).
-
-\begin{table}[htb]
-	\centering
-	\begin{tabular}{|c|c|c|c|c|c|c|c|}% p{2.2cm} 
-		\hline
-		\multicolumn{8}{|c|}{Prueba T-Student para la Satisfacción }\\
-		\hline
-		\multirow{3}{*}{} & \multicolumn{4}{c|}{Diferencias por pares} & \multirow{3}{*}{\textit{t}} & \multirow{3}{*}{\textit{df}} & \multirow{3}{*}{\textit{Sig.(2-colas)}}\\ \cline{2-5}
-		& \multirow{2}{*}{\textit{Dif. Medias}} & \multirow{2}{*}{\textit{Error Des.Est.}} & 	\multicolumn{2}{c|}{\textit{95\% Int. Confianza}} &  &  & \\ \cline{4-5}
-		&  &  & \textit{Bajo} & \textit{Alto} &  &  & \\
-		\hline \hline
-		Satisfacción & -0.21 & 0.16 & -0.61 & 0.19 & -1.28 & 6 & 0.024 \\
-		\hline
-	\end{tabular}
-	\caption{Aplicación de la prueba T-Student a la satisfacción.}
-	\label{tabla:t-satisfaccion}
-\end{table}
-
-\subsection{Interpretación de Resultados}
-
-Luego de procesar los datos obtenidos en la evaluación de las interfaces para cada una de las métricas definidas por la norma estándar ISO 9241, que evalúa los sistemas interactivos en tres dimensiones (eficacia, eficiencia y satisfacción), se procedió a aplicar la prueba estadística de ``T-Student'' con la que se determinó que existe evidencia suficiente para afirmar que existente diferencia significativa al comparar la eficacia, eficiencia y satisfacción de las interfaces. Los resultados son resumidos de la siguiente forma:
-
-\begin{itemize}
-	\item La eficacia es \textbf{menor} utilizando el modelo de interfaz propuesto (AliciaVR) que utilizando el modelo de interfaz tradicional (Alicia-Web).
-	\item La eficiencia es \textbf{mayor} utilizando el modelo de interfaz propuesto (AliciaVR) que utilizando el modelo de interfaz tradicional (Alicia-Web).
-	\item La satisfacción es \textbf{mayor} utilizando el modelo de interfaz propuesto (AliciaVR) que utilizando el modelo de interfaz tradicional (Alicia-Web).
-\end{itemize}	
-
-La interpretación de estos resultados es que el modelo de interfaz propuesto basado en realidad virtual AliciaVR es superior a la interfaz tradicional de ALICIA, a la que en la investigación se la denominó como Alicia-Web, sólo en términos de \textbf{Eficiencia} y \textbf{Satisfacción}. Por el contrario, la interfaz Alicia-Web, es superior al modelo de interfaz propuesto AliciaVR en términos de \textbf{Eficacia}.
-Esto significa que un usuario puede realizar las tareas con menos tiempo y con mucha conformidad en la la interfaz AliciaVR, pero puede ejecutar muchas más tareas en la interfaz Alicia-Web.   
-
-\section{Publicación de Artículos Científicos}
-
-En esta sección se listan los artículos científicos relacionados a la presente investigación, separados en base a su estado de publicación.
-
-\subsection{Artículos Científicos Indizados}
-
- Artículo: \textbf{``Prediction of tourist traffic to Peru by using sentiment analysis in Twitter social network''}. Aceptado en la \textit{Conferencia Latinoamericana de Informática - CLEI 2015}. Indizado en \textit{SCOPUS} e \textit{IEEE Xplore}  con \textit{DOI}: 10.1109/CLEI.2015.7360051.
-
-\subsection{Artículos Científicos en Evaluación}
-%\begin{itemize}
-
-Artículo: \textbf{ ``AliciaVR: Exploration of Scientific Articles in an Immersive Virtual Environment with Natural User Interfaces''}. Enviado para evaluación al \textit{IEEE ETCM 2016 - Ecuador Technical Chapters Meeting}.\\ 
-
-Artículo: \textbf{``AliciaVR: Improving Virtual Reality with Natural Language Processing for Papers Explorations''}. Enviado para evaluación al \textit{IEEE ANDESCON 2016 - Andean Council International Conference}.\\
-
-\subsection{Artículos Científicos por Elaborar}
-
- Artículo: \textbf{``AliciaVR: Evaluating a Virtual Reality Interface using ISO 9241 based on Effectiveness, Efficiency and Satisfaction''}. En proceso de elaboración para ser enviado al \textit{ACM CHI 2017}. \\
- 
- Artículo: \textbf{``AliciaVR: Incorporating Aboriginal Languages Quechua and Aymara by Linguistic Computing''}. En proceso de elaboración para ser enviado al \textit{IEEE INTERCON 2017}.
+	\begin{minipage}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{imagenes/resultados/t_lsp.png}
+		\caption{Proyección temporal LSP usando de dataset colecciones de documentos}
+		\label{fig:t_lsp}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[b]{0.5\textwidth}
+		\includegraphics[width=\textwidth]{imagenes/resultados/t_nj.png}
+		\caption{Proyección NJ usando de dataset colecciones de documentos}
+		\label{fig:t_nj}
+	\end{minipage}
+\end{figure}
