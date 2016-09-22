@@ -1,36 +1,85 @@
 \chapter{Introducción}
 
-\section{Consideraciones Iniciales}\label{sec:in}
+\section{Consideraciones Iniciales y Motivación}\label{sec:in}
 %\versal{E}
 %\versal{E}n el campo de la investigación en general, los artículos científicos son el mejor mecanismo por medio del cual los investigadores publican sus resultados \citep{147:alencar:2012}. Son muy importantes al momento de iniciar una nueva investigación, debido a que se requiere de una búsqueda y revisión de los trabajos más cercanos al tema de investigación \citep{154:sun:2013}. Actualmente las bases de datos científicas permiten realizar esta labor y para buscar artículos científicos en estos sistemas informáticos generalmente se emplean interfaces tradicionales, compuestas por formularios, ventanas, menús, etc. Además se utilizan palabras claves, el nombre del autor, el año de publicación como parámetros de búsqueda y se presentan los resultados generalmente como una lista textual \citep{153:sakai:2012}. Pero a medida que la información crece con celeridad, se presentan dificultades para explorar y seleccionar adecuadamente los artículos científicos en este tipo de interfaces tradiciones, que puede ocasionar que el investigador no encuentre la información deseada. Por tanto, es importante investigar nuevas formas de representar e interactuar con la información.
 
 % la creciente alza de datos en internet
-En la actualidad la cantidad de datos producida por los medios electrónicos a tenido un alza importante tanto en el número de registros como en complejidad, este exceso de información es conocido como "sobrecarga de información" y esto ocurre cuando una persona no es capaz de localizar o hacer uso de información que necesita \citep{christian2001information}, como consecuencia identificar información útil de estos grandes conjuntos de datos se ha vuelto un reto, pues si ningún tipo de información es extraída el almacenamiento de los mismos sera una tarea inútil \citep{keim2002information}.
+En la actualidad la cantidad de datos producida por los medios electrónicos a tenido un alza importante tanto en el número de registros como en complejidad, de tal forma que se ha creado en los últimos dos años mas datos que en toda la historia anterior de la raza humana \cite{marr2015big} este exceso de información es conocido como "sobrecarga de información" como se menciona en \citep{paulovich2008least} y esto ocurre cuando una persona no es capaz de localizar o hacer uso de la información que necesita \citep{christian2001information}, como consecuencia identificar información útil de estos grandes conjuntos de datos se ha vuelto un reto.
+
+%pues si ningún tipo de información es extraída el almacenamiento de los mismos sera una tarea inútil \citep{keim2002information}.
 % los articulos cientificos
-Una gran parte de esta aumento en la cantidad de datos viene relacionado a las colecciones de artículos científicos que recientemente su exploración a despertado el interés de la comunidad científica, pues son muy importantes al momento de iniciar una nueva investigación \citep{154:sun:2013}, a pesar que los motores de bases de datos científicas ayudan en esta labor sus resultados son mostrados en una lista textual \citep{153:sakai:2012} y esto crea un problema cuando se van creando con el tiempo nuevas investigaciones ocasionando dificultados en el proceso de exploración por parte de un investigador. Como consecuencia se han realizado trabajos para facilitar el análisis de estas colecciones de documentos como por ejemplo en los trabajos de \citep{paulovich2008least} , \citep{alencarvisualizaccao}, \citep{valdivia2007mapeamento}.
+Una gran parte de esta aumento en la cantidad de datos viene relacionado a las colecciones de artículos científicos, como se menciona en \cite{ware2015stm}  la publicación colectiva es alrededor 2,5 millones de artículos y su crecimiento a sido del 3\% y un 3,5\%  al año con tendencia al crecimiento, como consecuencia su exploración a despertado el interés de la comunidad científica dada la importancia al momento de iniciar una nueva investigación donde las referencias bibliográficas, las fechas de las investigaciones guardan una vital relación con el tema que se esta investigando \citep{154:sun:2013}. A pesar que los motores de bases de datos científicas ayudan en esta labor sus resultados son mostrados en una lista textual \citep{153:sakai:2012} y si bien pueden mostrar un orden cronológico, resultando difícil la exploración conjunta del contenido temático, relaciones referenciales de bibliografía y la jerarquía en cuanto al tiempo que fueron publicadas. Esto genera problemas cuando se van creando con el tiempo nuevas investigaciones ocasionando dificultados en el proceso de exploración por parte de un investigador. 
+
+% mapeamiento de textos
+A razón de estos problemas surgieron técnicas de mapeamiento de texto, que se define como la creación de un mapa de una colección de documentos basándose en el análisis de su contenido y sus similitudes, pasando primero por una etapa de preprocesamiento, proyección de los datos en dos dimensiones seguido de algún método de clustering como se define en \cite{lopes2006mapping}. 
+
+En \cite{borner2003visualizing} muestra diferentes técnicas para realizar mapeamiento de texto, para dar solución a dos problemas importantes en el proceso de análisis y visualización de textos \cite{cuadros:2007:point}: Enormes cantidades de datos deben ser mostrados en un espacio limitado y que los datos multidimensionales necesitan ser mostrados en espacios de dos dimensiones. Se presentan entonces técnicas de clustering, posicionamiento basado en fuerza, y reducción de dimensionalidad. Dentro de las técnicas de reducción de dimensionidad se encuentran las proyecciones multidimensionales que son mas rápidas e intentan preservar el máximo posible las relaciones de similaridad entre objetos  quedando mapeados en espacios de bajas dimensiones \cite{cuadros:2007:point}.
+
+% propouestas ventajas y desventajas
+Como consecuencia se han realizado trabajos que usan projecciones multidimensionales para facilitar el análisis de estas colecciones de documentos como por ejemplo en los trabajos de \citep{valdivia2007mapeamento}, \citep{paulovich2008least}, \citep{paulovich2012semantic}.
+
+La técnica de proyección \textit{Neighbor joining} propuesta en \citep{saitou1987neighbor} para mostrar la evolución de organismos a través de la reconstrucción de árboles filogenéticos  y utilizada también en proyección de documentos \citep{valdivia2007mapeamento}. Esta técnica a demostrado ser adecuada para el mapeamiento de texto, ademas de tener ventajas sobre otras técnicas en cuanto a los problemas que surgen en el proceso de visualización pues visualmente la técnica \textit{Neighbor joining} puede partir de una visión local o global del árbol. \citep{valdivia2007mapeamento}.
+
+
+%la adecuada visualización de datos similares que deben mostrarse mas cerca y como también si los datos tienen un alto grado de correlación, no deben estar sobrepuestos.
+
+%los datos deberian ser colocados próximos en mapas de visualización son colocados distantes datos con un alto grado de correlación son sobrepuestos perjudicando una distinción individual de los grupos .
+
+
+% tiene propiedades que permiten visualizar de forma comprensible las características de los datos, en este caso se propone usar técnicas como \textit{Temporal text mining} y \textit{Evolutionary theme patterns} ademas de modificaciones del algoritmo \textit{Neighbor joining} para que incorpore el tratamiento del componente temporal como tambien de presentar de manera visual la evolución temática de colecciones de artículos científicos de manera entendible para un análisis visual posterior por el usuario. 
+
+%bueno aqui decimos que segun borner se propuse estas tecnica de mapeamiento y en anita se describen las ventjaas y desventajas entonces nos quedmaos con las tecnicas de proyeccion y esto luego hablo de lo que soluciona anita despues que no considera el tiempo luego de las tecnicas de proeyccion dinamcas y de alencar floro y terminamos :D
 
 % tecnicas para analizar los arituclos cientificos
+%\section{Motivación}\label{sec:motivacion}
+% proyecciones dinamicas ( USO DEL TIEMPO)
+Las técnicas de proyección antes mencionadas han demostrado tener un buen desempeño en cuanto al mapeamiento de artículos científicos. Estas colecciones sin embargo en el mayor número de casos tienen propiedades temporales, como en una conferencia indexada anualmente o en el caso de nuevos avances publicados recientemente con referencias a artículos anteriores. A pesar de tener el componente temporal un papel importante en muchos tipos de datos, inclusive en texto, muchas técnicas de proyección multidimensional no lo consideran explícitamente en su proceso de visualización como lo muestra \citep{alencarvisualizaccao} en las siguientes técnicas de proyección multidimensionales dinámicas \citep{alsakran2012real}, \citep{cruzexplorando}, \citep{joia2011local}, \citep{de2010incremental}. 
 
+
+En \citep{alencarvisualizaccao} propone la técnica \textit{Time-based Least Square Projection} que solucionan parcialmente algunas de las desventajas que poseen las proyecciones dinámicas como la incorporación del componente temporal en el proceso de proyección y ademas ofrece un buen equilibrio entre la preservación de la información global y de las relaciones de vecindad local como también un costo computacional inferior a otras técnicas. A pesar de tener buenos resultados muestra limitaciones como la susceptibilidad a la ultima proyección debido a su esquema retroactivo, este modelo esta limitado a intervalos de tiempo anuales, ademas de que un usuario puede tener dificultades en acompañar la evolución de tópicos por medio de los efectos de la animación \citep{alencarvisualizaccao}.
 
 % evolucion temporal de los temas 
-Los enfoques antes considerados ofrecen una visualización de los datos en este caso colecciones de artículos científicos, donde las similitudes de documentos es por contenido, y tienen la desventaja de no ofrecer una evolución de sus temas a través del tiempo, por ejemplo si un investigador quiere saber que cuales son las investigaciones mas recientes en un campo de estudio, las técnicas antes mencionadas no proporcionaran ayuda, para esto se ha realizado un enfoque en \citep{alencar2007mineraccao} donde aborda este problema haciendo uso también de técnicas conocidas como \textit{Temporal text mining} y \textit{Evolutionary theme patterns} \citep{mei2005discovering} enfocándose principalmente en hacer una versión temporal de \textit{Least square projection}, el estudio antes mencionado permite visualizar patrones en las colecciones de artículos dando una idea de su evolución temática temporal, aun así tiene la desventaja de que la interpretación de la visualización es difícil y necesita ser evaluada por un experto.
+Los enfoques antes considerados ofrecen una visualización de los datos en este caso colecciones de artículos científicos, donde las similitudes de documentos es por contenido, y tienen la desventaja de no ofrecer una evolución de sus temas a través del tiempo, por ejemplo si un investigador quiere saber que cuales son las investigaciones mas recientes en un campo de estudio, las técnicas antes mencionadas no proporcionaran ayuda, para solucionar esto en \citep{alencar2007mineraccao} ofrece un enfoque en  donde aborda este problema haciendo uso también de técnicas conocidas como \textit{Temporal text mining} tiene que ver con el descubrimiento de patrones temporales en información de texto a través del tiempo y una tarea en particular que es \textit{Evolutionary theme patterns} \citep{mei2005discovering}.
 
 % NJ
 
 
-\section{Motivación}\label{sec:motivacion}
-Las técnicas de proyección han demostrado tener un buen desempeño en cuanto a la visualización de información de varios tipos de datos incluyendo colecciones de artículos científicos \citep{valdivia2007mapeamento}, \citep{paulovich2008mapeamento}, sin embargo si se considera una colección de artículos científicos que tienen propiedades temporales como es en el mayor numero de casos como una conferencia anual que a sido indexada temporalmente. A pesar de tener el componente temporal un papel crucial en muchos tipos de datos, inclusive en texto, muchas técnicas de proyección multidimensional no lo consideran explícitamente en su proceso de visualización \citep{alencarvisualizaccao}, algunos avances en esta área son las proyecciones dinámicas como \textit{Temporal Least square projection} en \citep{alencarvisualizaccao} donde ofrece un enfoque temporal aplicado a un método de proyección, algunas deficiencias de este enfoque son la dificultad de analizar los resultados, en el trabajo antes mencionado también emplea técnicas como \textit{Temporal text mining} y \textit{Evolutionary theme patterns} para ver la evolución temporal de temas, aun así al algoritmo  \textit{Least square projection} tiene problemas para dar una correcta visualización de los mismos.
+\section{Descripción del problema}
+Como antes se había mencionado, identificar información útil de conjuntos grandes de datos constituye una ardua tarea. Las colecciones de artículos científicos forman parte de esta creciente producción de datos. Este tipo de datos tienen características propias como son las referencias bibliográficas de trabajos relacionados, la temporalidad (fecha de publicación del artículo científico). Cuando una persona desea iniciar una nueva investigación toda esta carga de información es mostrada de forma textual \citep{153:sakai:2012}.
 
-\section{Objetivos}\label{sec:objetivos}
+Trabajos como los de  \citep{paulovich2008least}, \citep{valdivia2007mapeamento} entre otros, mapean la información, logrando una visión mas comprensible de las colecciones de artículos científicos basados en su similitud por contenido. 
+Estas técnicas no consideran el tiempo siendo este atributo importante, como tampoco muestran la evolución temporal de los sus temas. El enfoque  \citep{alencar2007mineraccao} donde aborda este problema haciendo uso también de técnicas conocidas como \textit{Temporal text mining} y \textit{Evolutionary theme patterns} muestra también algunas limitaciones que fueron mencionadas anteriormente. Estas desventajas hacen que la exploración de colecciones de artículos científicos sea una tarea difícil, como por ejemplo: como también conocer cuales son las ultimas investigaciones en el estado del arte (íntimamente relacionado con el tiempo), que artículos están relacionados entre si y su similitud por contenido como por ultimo explorar la evolución temática en la colección de artículos.  
+ 
+
+
+%Identificar información útil de grandes conjuntos de datos se ha vuelto un reto \citep{keim2002information}, una gran parte de esta aumento en la cantidad de datos viene relacionado a las colecciones de artículos científicos que recientemente su exploración a despertado el interés de la comunidad científica, pues son muy importantes al momento de iniciar una nueva investigación \citep{154:sun:2013}, a pesar que los motores de bases de datos científicas ayudan en esta labor sus resultados son mostrados en una lista textual \citep{153:sakai:2012} y esto crea un problema cuando se van creando con el tiempo nuevas investigaciones ocasionando dificultados en el proceso de exploración por parte de un investigador. Como consecuencia se han realizado trabajos para facilitar el análisis de estas colecciones de documentos como por ejemplo en los trabajos de \citep{paulovich2008least} haciendo uso del método de proyección  \textit{Least square projection} como en \citep{valdivia2007mapeamento} utiliza \textit{Neighbor joining}.
+
+
+
+\section{Objetivos de la investigación}\label{sec:objetivos}
 
 \subsection{Objetivo Principal}
-Investigar como incorporar el tratamiento del componente temporal en una proyección multidimensional basado en árboles filogenéticos de modo que sea apropiado para tareas de análisis exploratoria envolviendo la evolución de temas en colecciones de artículos científicos.
+Investigar como incorporar el tratamiento del componente temporal en una proyección multidimensional \textit{Neighbor joining} de modo que sea apropiado para tareas de análisis exploratoria envolviendo la evolución de temas en colecciones de artículos científicos.
 
 \subsection{Objetivos Secundario}
 \begin{enumerate}
-	\item Obtener una proyección multidimensional con componente temporal basado en árboles filogenéticos.
+	\item Obtener una proyección multidimensional con componente temporal basado en \textit{Neighbor joining}.
 	\item Detectar e incluir una representación visual sobre la evolución de tópicos o temas.
 \end{enumerate}
+
+\section{Metodología}
+La metodología a seguir constará de las siguientes partes como lo muestra la figura \ref{fig:proceso_tnj} a continuación: 
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{imagenes/resultados/temp_nj.png}
+	\caption{Proceso de construcción de mapas de textos evolutivos usando NJ}
+	\label{fig:proceso_tnj}
+\end{figure}
+
+
 
 \section{Organización del Trabajo} \label{sec:estrutura}
 
@@ -39,18 +88,12 @@ Este trabajo está organizado en 5 capítulos, incluyendo esta introducción, y la 
 \begin{itemize}
  % similarity search
  
-\item En el \textbf{Capítulo 2} se presenta los conceptos previos de la investigación, el cual incluye Mineria de datos temporales, Evolución temporal de temas, Proyección de datos multidimensionales y Árboles filogenéticos.
+\item En el \textbf{Capítulo 2} se presenta los conceptos previos de la investigación, el cual incluye Minería de datos temporales, Evolución temporal de temas, Proyección de datos multidimensionales y Árboles filogenéticos.
 
 %\item En el \textbf{Capítulo 3} se describen todo el proceso de desarrollo de la investigación, que implica el desarrollo de cada objetivo específico a fin de alcanzar el objetivo general.
 
 %\item En el \textbf{Capítulo 4} se muestra la evaluación de los resultados, desde su representación y análisis estadístico hasta su interpretación. Además se presentan las publicaciones científicas aceptadas, en evaluación y en proceso de elaboración.
 
 %\item En el \textbf{Capítulo 5} se presentan las conclusiones finales de la investigación, las contribuciones y los trabajos futuros.
-\section{Descripción del problema}
- Identificar información útil de grandes conjuntos de datos se ha vuelto un reto \citep{keim2002information}, una gran parte de esta aumento en la cantidad de datos viene relacionado a las colecciones de artículos científicos que recientemente su exploración a despertado el interés de la comunidad científica, pues son muy importantes al momento de iniciar una nueva investigación \citep{154:sun:2013}, a pesar que los motores de bases de datos científicas ayudan en esta labor sus resultados son mostrados en una lista textual \citep{153:sakai:2012} y esto crea un problema cuando se van creando con el tiempo nuevas investigaciones ocasionando dificultados en el proceso de exploración por parte de un investigador. Como consecuencia se han realizado trabajos para facilitar el análisis de estas colecciones de documentos como por ejemplo en los trabajos de \citep{paulovich2008least} haciendo uso del método de proyección  \textit{Least square projection} como en \citep{valdivia2007mapeamento} utiliza \textit{Neighbor joining}.
-Los enfoques antes considerados ofrecen una visualización de los datos en este caso colecciones de artículos científicos, donde las similitudes de documentos es por contenido, y tienen la desventaja de no ofrecer una evolución de sus temas a través del tiempo, por ejemplo si un investigador quiere saber que cuales son las investigaciones mas recientes en un campo de estudio, las técnicas antes mencionadas no proporcionaran ayuda, para esto se ha realizado un enfoque en \citep{alencar2007mineraccao} donde aborda este problema haciendo uso también de técnicas conocidas como \textit{Temporal text mining} y \textit{Evolutionary theme patterns} \citep{mei2005discovering} enfocándose principalmente en hacer una versión temporal de \textit{Least square projection}, el estudio antes mencionado permite visualizar patrones en las colecciones de artículos dando una idea de su evolución temática temporal, aun así tiene la desventaja de que la interpretación de la visualización es difícil y necesita ser evaluada por un experto.
-
-\section{Método Propuesto}
-La técnica de proyección \textit{Neighbor joining} propuesta en \citep{saitou1987neighbor} para mostrar la evolución de organismos a través de la reconstrucción de árboles filogenéticos  y utilizado en proyección de documentos en \citep{valdivia2007mapeamento}, tiene propiedades que permiten visualizar de forma comprensible las características de los datos, en este caso se propone usar técnicas como \textit{Temporal text mining} y \textit{Evolutionary theme patterns} ademas de modificaciones del algoritmo \textit{Neighbor joining} para que incorpore el tratamiento del componente temporal como tambien de presentar de manera visual la evolución temática de colecciones de artículos científicos de manera entendible para un análisis visual posterior por el usuario.
 
 \end{itemize}
